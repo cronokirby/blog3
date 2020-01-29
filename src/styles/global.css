@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+
+html, body {
+  height: 100%;
+  @apply bg-brown-300;
+}
+
+@tailwind utilities;
