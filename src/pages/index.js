@@ -1,15 +1,27 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 
-const PostCard = ({ ttr, title, date, image }) => (
-  <li className="flex flex-col justify-between w-64 mx-4 my-4 bg-brown-500">
-    <div className="h-48">
-      <img src={image} className="object-cover h-48 w-full" alt=""></img>
+const PostCard = ({ ttr, title, date, image, tags }) => (
+  <li className="flex flex-col justify-between w-11/12 sm:w-64 mx-4 my-4 bg-brown-500">
+    <div>
+      <div className="h-48">
+        <img src={image} className="object-cover object-top w-full h-48" alt=""></img>
+      </div>
+      <div className="flex items-baseline justify-between mx-3 mt-2 text-brown-800">
+        <span>{date}</span>
+        <span>
+          {ttr} <span className="italic">mins</span>
+        </span>
+      </div>
     </div>
-    <div className="p-2">
-      <h2 className="font-bold font-serif text-2xl">{title}</h2>
-      <span className="text-lg text-brown-800">{date}</span>
-    </div>
+    <h2 className="mx-2 font-serif text-2xl font-bold hover:underline">
+      {title}
+    </h2>
+    <ul className="flex flex-wrap items-baseline text-xs justify-start mx-2 my-2 text-brown-800">
+      {tags.map(t => (
+        <li className="hover:underline border-brown-800 px-1 upper">{t}</li>
+      ))}
+    </ul>
   </li>
 );
 
@@ -17,12 +29,12 @@ export default ({ data }) => {
   const edges = data.allMarkdownRemark.edges;
 
   const posts = (
-    <ul className="mx-auto lg:w-1/2 w-11/12 justify-center sm:justify-start flex flex-wrap">
+    <ul className="flex flex-wrap justify-center w-11/12 mx-auto lg:w-1/2 sm:justify-start">
       {edges.map(
         ({
           node: {
             timeToRead,
-            frontmatter: { path, title, date, image },
+            frontmatter: { path, title, date, image, tags },
           },
         }) => (
           <PostCard
@@ -31,6 +43,7 @@ export default ({ data }) => {
             title={title}
             date={date}
             image={image}
+            tags={tags}
           />
         )
       )}
@@ -42,7 +55,7 @@ export default ({ data }) => {
 
 export const query = graphql`
   query IndexQuery {
-    allMarkdownRemark {
+    allMarkdownRemark(sort: { fields: [frontmatter___date], order: DESC }) {
       edges {
         node {
           timeToRead
@@ -50,6 +63,7 @@ export const query = graphql`
             path
             title
             image
+            tags
             date(formatString: "MMMM DD, YYYY")
           }
         }

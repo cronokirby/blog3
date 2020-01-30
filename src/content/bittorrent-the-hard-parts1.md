@@ -3,7 +3,7 @@ title: "Bittorrent Is Hard - 1"
 date: 2019-05-03T16:54:09+02:00
 description: "An algorithm for piece serialization"
 draft: false
-path: "/bittorrent-the-hard-parts"
+path: "/posts/bittorrent-the-hard-parts"
 image: "/print2.jpg"
 tags:
   - "Distributed Systems"

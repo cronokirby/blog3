@@ -3,8 +3,8 @@ title: "Integrating Notes and SRS"
 description: "Some rough ideas on how to join integrated notes and spaced repetition"
 date: 2020-01-10
 draft: false
-path: "/integrating-notes-and-srs"
-image: "/print2.jpg"
+path: "/posts/integrating-notes-and-srs"
+image: "/print3.jpg"
 tags:
   - Learning
   - SRS

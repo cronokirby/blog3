@@ -3,8 +3,8 @@ title: "From Interfaces to Traits"
 date: 2019-08-17T08:32:00-04:00
 draft: false
 description: "What makes the concept of traits different from interfaces? Why would you want traits in the first place?"
-path: "/interfaces-to-traits"
-image: "/print2.jpg"
+path: "/posts/interfaces-to-traits"
+image: "/print8.jpg"
 tags:
   - "Software Architecture"
   - "Programming Languages"
