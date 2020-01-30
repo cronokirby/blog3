@@ -1,8 +1,14 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 import PostList from '../../components/PostList';
+import Nav from '../../components/Nav';
 
-export default ({ data }) => <PostList data={data} />;
+export default ({ data }) => (
+  <>
+    <Nav />
+    <PostList data={data} />
+  </>
+);
 
 export const query = graphql`
   query IndexQuery {

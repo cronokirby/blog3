@@ -1,20 +1,21 @@
 import React from 'react';
-import { graphql } from 'gatsby';
+import { graphql, Link } from 'gatsby';
+import Nav from '../../components/Nav';
 
 const ProjectCard = ({ html, description, title, tech, link }) => {
   return (
-    <div className="bg-brown-500 text-brown-900 mx-4 my-4 px-4 py-2">
-      <h1 className="text-3xl font-bold">
+    <div className="px-4 py-2 mx-4 my-4 bg-brown-500 text-brown-900">
+      <h1 className="text-3xl font-bold hover:underline">
         <a href={link}>{title}</a>
       </h1>
       <h2 className="w-64 text-lg text-brown-800">{description}</h2>
-      <ul className="my-2 w-64 flex text-brown-700 underline flex-wrap">
+      <ul className="flex flex-wrap w-64 my-2 italic text-brown-700">
         {tech.map(t => (
-          <li className="mr-1">{t}</li>
+          <li className="mr-3">{t}</li>
         ))}
       </ul>
       <div
-        className="w-64 text-sm"
+        className="w-64 text-sm project"
         dangerouslySetInnerHTML={{ __html: html }}
       ></div>
     </div>
@@ -42,9 +43,12 @@ export default ({ data }) => {
   );
 
   return (
-    <ul className="flex flex-wrap justify-center items-stretch lg:w-1/2 mx-auto">
+    <>
+    <Nav />
+    <ul className="flex flex-wrap justify-center mx-auto lg:w-1/2">
       {projects}
     </ul>
+    </>
   );
 };
 

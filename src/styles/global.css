@@ -42,4 +42,8 @@ html, body {
   @apply underline;
 }
 
+.project a {
+  @apply underline;
+}
+
 @tailwind utilities;
