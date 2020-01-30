@@ -1,6 +1,7 @@
 import React from 'react';
 import { graphql, Link } from 'gatsby';
 import Nav from '../../components/Nav';
+import Helmet from 'react-helmet';
 
 const ProjectCard = ({ html, description, title, tech, link }) => {
   return (
@@ -44,6 +45,10 @@ export default ({ data }) => {
 
   return (
     <>
+    <Helmet>
+      <title>Projects | Cronokirby</title>
+      <meta name="description" content="This is where all of Cronokirby's projects can be found" />
+    </Helmet>
     <Nav />
     <ul className="flex flex-wrap justify-center mx-auto lg:w-1/2">
       {projects}

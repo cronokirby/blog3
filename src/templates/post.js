@@ -1,12 +1,17 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 import Nav from '../../components/Nav';
+import Helmet from 'react-helmet';
 
 export default function Template({ data }) {
   const { markdownRemark } = data;
   const { frontmatter, html } = markdownRemark;
   return (
     <>
+      <Helmet>
+        <title>{frontmatter.title} | Cronokirby</title>
+        <meta name="description" content={frontmatter.description} />
+      </Helmet>
       <Nav />
       <div className="my-4 sm:w-5/6 lg:w-1/2 mx-auto text-brown-900">
         <img
@@ -36,6 +41,7 @@ export const pageQuery = graphql`
         image
         path
         title
+        description
       }
     }
   }
