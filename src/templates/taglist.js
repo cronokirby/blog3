@@ -7,7 +7,7 @@ export default ({ data }) => <PostList data={data} />;
 export const pageQuery = graphql`
   query($tag: String!) {
     allMarkdownRemark(
-      filter: { frontmatter: { tags: { in: [$tag] } } }
+      filter: { frontmatter: { tags: { in: [$tag] }, type: { eq: "post" } } }
       sort: { fields: [frontmatter___date], order: DESC }
     ) {
       edges {

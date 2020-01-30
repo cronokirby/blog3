@@ -5,6 +5,7 @@ draft: false
 description: Mutability is ok, as long as no one knows about it
 path: "/posts/mutability-is-a-great-secret-to-have"
 image: "/print12.jpg"
+type: post
 tags:
   - "Functional Programming"
 ---

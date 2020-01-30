@@ -5,6 +5,7 @@ draft: false
 description: "What makes the concept of traits different from interfaces? Why would you want traits in the first place?"
 path: "/posts/interfaces-to-traits"
 image: "/print8.jpg"
+type: post
 tags:
   - "Software Architecture"
   - "Programming Languages"

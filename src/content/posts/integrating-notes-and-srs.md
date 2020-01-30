@@ -5,6 +5,7 @@ date: 2020-01-10
 draft: false
 path: "/posts/integrating-notes-and-srs"
 image: "/print3.jpg"
+type: post
 tags:
   - Learning
   - SRS

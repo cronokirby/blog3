@@ -5,6 +5,7 @@ draft: false
 description: "This is a post about [Poline](https://github.com/cronokirby/poline), a tiny programming language I wrote recently."
 path: "/posts/poline"
 image: "/print6.jpg"
+type: post
 tags:
   - Rust
   - Programming Languages

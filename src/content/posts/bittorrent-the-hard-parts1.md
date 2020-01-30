@@ -4,6 +4,7 @@ date: 2019-05-03T16:54:09+02:00
 description: "An algorithm for piece serialization"
 draft: false
 path: "/posts/bittorrent-the-hard-parts"
+type: post
 image: "/print2.jpg"
 tags:
   - "Distributed Systems"

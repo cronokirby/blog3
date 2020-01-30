@@ -5,6 +5,7 @@ draft: false
 description: "The difference between data races and race conditions, illustrated in Go"
 path: "/posts/data-races-vs-race-conditions"
 image: "/print7.jpg"
+type: post
 tags:
   - Concurrency
   - Go

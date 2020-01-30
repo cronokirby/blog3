@@ -5,6 +5,7 @@ draft: false
 description: "Introducing Ludus, a little NES emulator I wrote recently, using Rust"
 path: "/posts/introducing-ludus"
 image: "/print10.jpg"
+type: post
 tags:
   - Rust
   - Emulation

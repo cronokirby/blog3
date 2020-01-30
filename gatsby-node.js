@@ -4,7 +4,7 @@ const { createFilePath } = require(`gatsby-source-filesystem`);
 async function markdownpages(createPage, graphql) {
   const result = await graphql(`
     {
-      allMarkdownRemark {
+      allMarkdownRemark(filter: { frontmatter: { type: { eq: "post" } } }) {
         edges {
           node {
             frontmatter {
@@ -29,7 +29,7 @@ async function markdownpages(createPage, graphql) {
 async function tagPages(createPage, graphql) {
   const result = await graphql(`
     {
-      allMarkdownRemark {
+      allMarkdownRemark(filter: { frontmatter: { type: { eq: "post" } } }) {
         edges {
           node {
             frontmatter {

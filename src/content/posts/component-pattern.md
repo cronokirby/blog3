@@ -5,6 +5,7 @@ description: "A common architectural pattern for organising stateful code"
 draft: false
 path: "/posts/component-pattern"
 image: "/print11.jpg"
+type: post
 tags:
   - "Software Architecture"
   - "Functional Programming"
