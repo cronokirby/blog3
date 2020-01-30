@@ -8,7 +8,7 @@ export default function Template({ data }) {
   return (
     <>
       <Nav />
-      <div className="bg-brown-400 my-4 sm:w-5/6 lg:w-1/2 mx-auto text-brown-900">
+      <div className="my-4 sm:w-5/6 lg:w-1/2 mx-auto text-brown-900">
         <img
           src={frontmatter.image}
           alt=""
