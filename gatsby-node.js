@@ -1,4 +1,5 @@
 const path = require('path');
+const { createFilePath } = require(`gatsby-source-filesystem`);
 
 async function markdownpages(createPage, graphql) {
   const result = await graphql(`
@@ -47,13 +48,25 @@ async function tagPages(createPage, graphql) {
     createPage({
       path: `/tag/${tag}`,
       component: path.resolve('src/templates/taglist.js'),
-      context: { tag }
-    })
-  })
+      context: { tag },
+    });
+  });
 }
 
 exports.createPages = async ({ actions, graphql }) => {
   const { createPage } = actions;
   await markdownpages(createPage, graphql);
   await tagPages(createPage, graphql);
+};
+
+exports.onCreateNode = ({ node, actions, getNode }) => {
+  const { createNodeField } = actions;
+  if (node.internal.type === `MarkdownRemark`) {
+    const value = createFilePath({ node, getNode });
+    createNodeField({
+      name: `slug`,
+      node,
+      value,
+    });
+  }
 };
