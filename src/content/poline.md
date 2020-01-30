@@ -4,6 +4,7 @@ date: 2019-08-31T19:18:13-04:00
 draft: false
 description: "This is a post about [Poline](https://github.com/cronokirby/poline), a tiny programming language I wrote recently."
 path: "/poline"
+image: "/print2.jpg"
 tags:
   - Rust
   - Programming Languages

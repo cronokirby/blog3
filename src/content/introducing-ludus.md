@@ -4,6 +4,7 @@ date: 2019-06-13T21:35:12+02:00
 draft: false
 description: "Introducing Ludus, a little NES emulator I wrote recently, using Rust"
 path: "/introducing-ludus"
+image: "/print2.jpg"
 tags:
   - Rust
   - Emulation

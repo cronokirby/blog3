@@ -4,6 +4,7 @@ description: "Some rough ideas on how to join integrated notes and spaced repeti
 date: 2020-01-10
 draft: false
 path: "/integrating-notes-and-srs"
+image: "/print2.jpg"
 tags:
   - Learning
   - SRS

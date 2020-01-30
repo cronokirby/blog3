@@ -2,6 +2,7 @@
 title: "Knowledge Dependencies"
 date: 2019-12-12
 path: "/knowledge-dependencies"
+image: "/print2.jpg"
 draft: true
 ---
 

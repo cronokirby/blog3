@@ -4,6 +4,7 @@ date: 2019-06-14T20:15:10+02:00
 draft: false
 description: "The difference between data races and race conditions, illustrated in Go"
 path: "/data-races-vs-race-conditions"
+image: "/print1.jpg"
 tags:
   - Concurrency
   - Go
