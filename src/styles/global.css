@@ -6,4 +6,40 @@ html, body {
   @apply bg-brown-300;
 }
 
+.h-128 {
+  height: 24rem;
+}
+
+.blog-post-content {
+  @apply font-sans text-lg;
+}
+
+.blog-post-content p {
+  @apply my-4;
+}
+
+.blog-post-content h1 {
+  @apply text-4xl font-bold;
+}
+
+.blog-post-content h2 {
+  @apply text-3xl font-bold;
+}
+
+.blog-post-content h3 {
+  @apply text-2xl font-bold;
+}
+
+.blog-post-content h4 {
+  @apply text-xl font-bold;
+}
+
+.blog-post-content pre {
+  @apply bg-brown-400 px-4 py-2 text-brown-900;
+}
+
+.blog-post-content a {
+  @apply underline;
+}
+
 @tailwind utilities;

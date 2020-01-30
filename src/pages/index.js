@@ -1,11 +1,15 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 
-const PostCard = ({ ttr, title, date, image, tags }) => (
+const PostCard = ({ ttr, title, date, image, path, tags }) => (
   <li className="flex flex-col justify-between w-11/12 sm:w-64 mx-4 my-4 bg-brown-500">
     <div>
       <div className="h-48">
-        <img src={image} className="object-cover object-top w-full h-48" alt=""></img>
+        <img
+          src={image}
+          className="object-cover object-top w-full h-48"
+          alt=""
+        ></img>
       </div>
       <div className="flex items-baseline justify-between mx-3 mt-2 text-brown-800">
         <span>{date}</span>
@@ -15,7 +19,7 @@ const PostCard = ({ ttr, title, date, image, tags }) => (
       </div>
     </div>
     <h2 className="mx-2 font-serif text-2xl font-bold hover:underline">
-      {title}
+      <a href={path}>{title}</a>
     </h2>
     <ul className="flex flex-wrap items-baseline text-xs justify-start mx-2 my-2 text-brown-800">
       {tags.map(t => (
