@@ -46,4 +46,14 @@ html, body {
   @apply underline;
 }
 
+.blog-post-content ul {
+  @apply mx-8;
+  list-style-type: circle;
+}
+
+.blog-post-content ol {
+  @apply mx-8;
+  list-style-type: decimal;
+}
+
 @tailwind utilities;
