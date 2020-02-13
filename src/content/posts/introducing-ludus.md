@@ -28,7 +28,7 @@ The first thing I did was running
 on the entire codebase, and found quite a few issues. The main issue had
 to do with a clippy warning for up-casts like:
 
-```rs
+```rust
 let x: u8;
 x as u16;
 ```
@@ -40,7 +40,7 @@ throughout the emulator.
 That being said, clippy actually did find the bugs in the APU causing the audio
 glitches:
 
-```rs
+```rust
 if x & 040 == 0x40
 ```
 
@@ -61,7 +61,7 @@ To make that easier, I ended up creating traits for the video and audio devices,
 and made the core logic of the emulator depend on traits, instead of the
 concrete video and audio structs that were needed:
 
-```rs
+```rust
 trait VideoDevice {
     fn blit_pixels(&mut self, pixels: &PixelBuffer)
 }

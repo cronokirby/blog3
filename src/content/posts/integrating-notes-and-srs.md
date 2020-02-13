@@ -93,7 +93,7 @@ A lot of markdown files include a header section allowing YAML (this one include
 
 ### Sections
 
-```
+```md
 ---
 title: "Integrating Notes and SRS"
 ---
@@ -111,7 +111,7 @@ We keep treating the content we see as part of that section until we reach
 
 A section header might end up looking like this:
 
-```
+```md
 ---
 section: "My beautiful section"
 description: "This is a summary about computational mechanics"
@@ -126,7 +126,7 @@ tags:
 For the SRS snippets, you want a way of specifying the prompt and information / extra sections.
 I've been thinking of doing it like this:
 
-```
+```md
 --?
 # This is valid markdown
 
