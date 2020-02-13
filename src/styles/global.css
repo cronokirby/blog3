@@ -36,7 +36,7 @@ html, body {
 }
 
 .blog-post-content pre {
-  @apply shadow-inner bg-white px-4 py-2 text-gray-700;
+  @apply font-mono shadow-inner bg-white px-4 py-2 text-gray-700;
   font-size: 0.9em;
 }
 
