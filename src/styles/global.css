@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 
+/* purgecss start ignore */
 html, body {
   height: 100%;
   @apply bg-blue-100;
@@ -57,5 +58,6 @@ html, body {
   @apply mx-8;
   list-style-type: decimal;
 }
+/* purgecss end ignore */
 
 @tailwind utilities;
