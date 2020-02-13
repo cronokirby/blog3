@@ -3,7 +3,7 @@
 
 html, body {
   height: 100%;
-  @apply bg-brown-300;
+  @apply bg-blue-100;
 }
 
 .h-128 {
@@ -11,7 +11,8 @@ html, body {
 }
 
 .blog-post-content {
-  @apply font-sans text-lg;
+  @apply font-sans;
+  font-size: 1.1em;
 }
 
 .blog-post-content p {
@@ -35,7 +36,8 @@ html, body {
 }
 
 .blog-post-content pre {
-  @apply bg-brown-400 px-4 py-2 text-brown-900;
+  @apply shadow-inner bg-white px-4 py-2 text-gray-700;
+  font-size: 0.9em;
 }
 
 .blog-post-content a {

@@ -13,7 +13,7 @@ export default function Template({ data }) {
         <meta name="description" content={frontmatter.description} />
       </Helmet>
       <Nav />
-      <div className="my-4 sm:w-5/6 lg:w-1/2 mx-auto text-brown-900">
+      <div className="my-4 sm:w-5/6 lg:w-2/5 px-2 py-2 mx-auto text-gray-800 bg-white shadow-md rounded">
         <img
           src={frontmatter.image}
           alt=""

@@ -5,7 +5,7 @@ import Helmet from 'react-helmet';
 
 const ProjectCard = ({ html, description, title, tech, link }) => {
   return (
-    <div className="px-4 py-2 mx-4 my-4 bg-brown-500 text-brown-900">
+    <div className="px-4 py-2 mx-4 my-4 text-gray-800 bg-white rounded shadow-md">
       <h1 className="text-3xl font-bold hover:underline">
         <a href={link}>{title}</a>
       </h1>

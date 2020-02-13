@@ -65,7 +65,7 @@ const Twitter = () => (
 
 export default () => (
   <nav>
-    <ul className="flex items-center py-2 mx-auto mb-4 text-3xl font-bold sm:w-3/4 lg:w-1/2 text-brown-900">
+    <ul className="flex items-center py-2 mx-auto mb-4 text-3xl font-bold sm:w-3/4 lg:w-1/2 text-gray-800">
       <li>
         <Link to="/" className="mr-4 hover:underline md:mr-8">
           Posts
@@ -77,17 +77,17 @@ export default () => (
         </Link>
       </li>
       <li className="flex-grow"></li>
-      <li className="hover:text-brown-700">
+      <li className="hover:text-gray-700">
         <a href="https://github.com/cronokirby">
           <Github />
         </a>
       </li>
-      <li className="ml-4 sm:ml-8 hover:text-brown-700">
+      <li className="ml-4 sm:ml-8 hover:text-gray-700">
         <Link to="/rss.xml">
           <RSS />
         </Link>
       </li>
-      <li className="ml-4 sm:ml-8 hover:text-brown-700">
+      <li className="ml-4 sm:ml-8 hover:text-gray-700">
         <a href="https://twitter.com/cronokirby">
           <Twitter />
         </a>
