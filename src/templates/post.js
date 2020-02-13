@@ -17,7 +17,7 @@ export default function Template({ data }) {
         <img
           src={frontmatter.image}
           alt=""
-          className="h-128 w-full object-cover"
+          className="h-128 w-full object-cover object-top"
         ></img>
         <div className="px-4 sm:px-8 py-4">
           <h2 className="text-xl text-brown-800 mt-2">{frontmatter.date}</h2>
