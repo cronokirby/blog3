@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'gatsby';
 
 const PostCard = ({ ttr, title, date, image, path, tags }) => (
-  <li className="flex flex-col justify-between w-11/12 sm:w-64 mx-4 my-4 px-2 py-2 bg-white rounded shadow-md text-gray-800">
+  <li className="flex flex-col justify-between w-11/12 px-2 py-2 mx-4 my-4 text-gray-800 bg-white rounded shadow-md sm:w-64">
     <div>
       <div className="h-48">
         <img
@@ -18,12 +18,12 @@ const PostCard = ({ ttr, title, date, image, path, tags }) => (
         </span>
       </div>
     </div>
-    <h2 className="mx-2 font-serif text-2xl font-bold hover:underline">
+    <h2 className="mx-2 text-xl font-bold hover:underline hover:text-blue-600">
       <Link to={path}>{title}</Link>
     </h2>
-    <ul className="flex flex-wrap items-baseline text-xs justify-start mx-2 my-2 text-gray-700">
+    <ul className="flex flex-wrap items-baseline justify-start mx-2 my-2 text-xs text-gray-700">
       {tags.map(t => (
-        <li className="hover:underline border-gray-700 px-1 upper">
+        <li className="px-1 border-gray-700 hover:underline upper">
           <Link to={`/tag/${t}`}>{t}</Link>
         </li>
       ))}

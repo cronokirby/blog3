@@ -35,7 +35,7 @@ One thing I really like about React is the recent "hooks" feature.
 Previously, react distinguished between _function_ components, which took in some parameters,
 called _props_, and returned some HTML to be rendered, e.g.
 
-```
+```jsx
 function TitleCard({ name }) {
   return <p>Hi my name is {name}</p>;
 }
@@ -43,7 +43,7 @@ function TitleCard({ name }) {
 
 You also had _class_ components, which at first resemble _function_ components:
 
-```
+```jsx
 class TitleCard extends React.Component {
   render() {
     return <p>Hi my name is {this.props.name}</p>;
@@ -54,7 +54,7 @@ class TitleCard extends React.Component {
 But class components also have a lot of other features in addition to just rendering some data.
 Notably, they have access to state:
 
-```
+```jsx
 class Counter extends React.Component {
   constructor(props) {
     super(props);
@@ -82,7 +82,7 @@ these things in function components.
 For example, if we wanted to take our `Counter` component from the previous example
 using a function component with hooks, it'd look like this:
 
-```
+```jsx
 function Counter() {
   const [count, setCount] = React.useState(0);
   return (
@@ -108,7 +108,7 @@ then a rerender needs to happen to make sure that what's on screen matches what'
 
 For example, let's split our counter in two:
 
-```
+```jsx
 function ShowCounter({ count, setCount }) {
   return (
     <div>
@@ -140,7 +140,7 @@ Now we come to the main pitfall I want to talk about in this post.
 
 Let's allow the user set a value for the counter:
 
-```
+```jsx
 function Counter({ initial }) {
   const [count, setCount] = React.useState(initial);
   return <ShowCounter {...{count, setCount}}>;
@@ -156,7 +156,7 @@ preserve the state between renders.
 
 This means that we need to do this instead:
 
-```
+```jsx
 function Counter({ initial }) {
   const [count, setCount] = React.useState(0);
   React.useEffect(() => setCount(initial), [initial]);
@@ -178,7 +178,7 @@ by doing things this way, you actually preserve state between rerenders, which i
 
 For example, let's say we had something like this:
 
-```
+```jsx
 function Counter({ name }) {
   const [count, setCount] = React.useState(0);
   return (
