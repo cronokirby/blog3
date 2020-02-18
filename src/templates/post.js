@@ -13,15 +13,15 @@ export default function Template({ data }) {
         <meta name="description" content={frontmatter.description} />
       </Helmet>
       <Nav />
-      <div className="my-4 sm:w-5/6 lg:w-2/5 px-2 py-2 mx-auto text-gray-800 bg-white shadow-md rounded">
+      <div className="px-2 py-2 mx-auto my-4 text-gray-800 bg-white rounded shadow-md sm:w-5/6 lg:w-2/5">
         <img
           src={frontmatter.image}
           alt=""
-          className="h-128 w-full object-cover object-top"
+          className="w-full"
         ></img>
-        <div className="px-4 sm:px-8 py-4">
-          <h2 className="text-xl text-brown-800 mt-2">{frontmatter.date}</h2>
-          <h1 className="text-5xl font-bold mb-4">{frontmatter.title}</h1>
+        <div className="px-4 py-4 sm:px-8">
+          <h2 className="mt-2 text-xl text-brown-800">{frontmatter.date}</h2>
+          <h1 className="mb-4 text-6xl font-bold">{frontmatter.title}</h1>
           <div
             className="blog-post-content"
             dangerouslySetInnerHTML={{ __html: html }}
