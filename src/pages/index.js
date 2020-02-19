@@ -122,7 +122,8 @@ export default () => (
                 I write posts
               </h1>
               <p className="w-64 text-lg">
-                  I write about programming, technology, and whatever else is on my mind.
+                I write about programming, technology, and whatever else is on
+                my mind.
               </p>
               <Link to="/posts" className="mt-4 text-xl font-bold underline">
                 See My Posts!
