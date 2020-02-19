@@ -18,7 +18,7 @@ const PostCard = ({ ttr, title, date, image, path, tags }) => (
         </span>
       </div>
     </div>
-    <h2 className="z-10 mx-2 text-xl font-bold hover:underline hover:text-blue-600">
+    <h2 className="z-10 mx-2 text-xl font-bold hover:underline hover:text-main-600">
       <Link to={path}>{title}</Link>
     </h2>
     <ul className="z-10 flex flex-wrap items-baseline justify-start mx-2 my-2 text-xs text-gray-700">
