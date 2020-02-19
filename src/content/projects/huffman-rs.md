@@ -2,6 +2,7 @@
 title: "Huffman-rs"
 date: 2019-03-11
 type: project
+image: "/projects/huffman.jpg"
 tech:
   - "Rust"
   - "Compression"

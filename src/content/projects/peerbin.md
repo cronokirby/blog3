@@ -2,6 +2,7 @@
 title: "Peerbin"
 date: 2018-11-01
 type: project
+image: "/projects/peerbin.png"
 tech:
   - "Elm"
   - "Javascript"

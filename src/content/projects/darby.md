@@ -2,6 +2,7 @@
 title: "Darby"
 date: 2018-11-07
 type: project
+image: "/projects/darby.png"
 tech:
   - "Haskell"
   - "SDL"

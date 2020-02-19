@@ -2,6 +2,7 @@
 title: "Ginkou"
 date: 2019-06-28T20:55:57+02:00
 type: project
+image: "/projects/ginkou.png"
 tech:
   - "Rust"
   - "SQLite"

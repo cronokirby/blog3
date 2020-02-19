@@ -2,6 +2,7 @@
 title: "Serve-csv"
 date: 2019-04-30
 type: project
+image: "/projects/serve-csv.jpg"
 tech:
   - "Go"
   - "REST APIs"

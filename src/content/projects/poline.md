@@ -2,6 +2,7 @@
 title: "Poline"
 date: 2019-08-16
 type: project
+image: "/print6.jpg"
 tech:
   - "Rust"
   - "Programming Languages"

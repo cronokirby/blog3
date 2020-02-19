@@ -2,6 +2,7 @@
 title: "Alchemy"
 date: 2018-01-01
 type: project
+image: "/projects/alchemy.png"
 tech:
   - "Elixir"
   - "Concurrency"

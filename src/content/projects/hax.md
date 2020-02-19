@@ -2,6 +2,7 @@
 title: "Hax"
 date: 2018-10-01
 type: project
+image: "/projects/hax.png"
 tech:
   - "Haskell"
   - "SDL"

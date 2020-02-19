@@ -2,6 +2,7 @@
 title: "Ludus"
 date: 2018-09-01
 type: project
+image: "/projects/ludus.png"
 tech:
   - "Rust"
 withpost: false

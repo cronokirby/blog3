@@ -2,6 +2,7 @@
 title: "Dex"
 date: 2019-04-27
 type: project
+image: "/projects/dex.png"
 tech:
   - "Javascript"
   - "Vue"

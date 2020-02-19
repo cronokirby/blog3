@@ -2,6 +2,7 @@
 title: "Haze"
 date: 2019-04-28
 type: project
+image: "/projects/haze.gif"
 tech:
   - "Haskell"
   - "Networking"

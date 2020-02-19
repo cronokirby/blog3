@@ -2,6 +2,7 @@
 title: "Cauchy"
 date: 2019-01-22
 type: project
+image: "/projects/cauchy.png"
 tech:
   - "Rust"
   - "OpenGL"

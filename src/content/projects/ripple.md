@@ -2,6 +2,7 @@
 title: "Ripple"
 date: 2019-04-09
 type: project
+image: "/projects/ripple.jpg"
 tech:
   - "Go"
   - "Concurrency"

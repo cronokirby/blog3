@@ -1,6 +1,7 @@
 ---
 title: "Populate"
 date: 2018-11-07
+image: "/projects/populate.png"
 type: project
 tech:
   - "Haskell"

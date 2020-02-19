@@ -2,6 +2,7 @@
 title: "Bittrickle"
 date: 2019-02-26
 type: project
+image: "/projects/trickle.jpg"
 tech:
   - "Rust"
   - "Networking"

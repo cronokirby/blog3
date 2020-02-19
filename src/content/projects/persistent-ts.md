@@ -2,6 +2,7 @@
 title: "Persistent-ts"
 date: 2019-05-20
 type: project
+image: "/projects/persistent.png"
 tech:
   - "Typescript"
   - "Data Structures"
