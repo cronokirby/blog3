@@ -81,7 +81,7 @@ export default () => (
       <div className="flex flex-wrap items-center justify-center mt-16 md:mt-32">
         <img
           src="/fluff/1.png"
-          className="z-10 w-10/12 rounded-lg shadow-lg sm:w-5/12 md:w-5/12"
+          className="z-10 w-10/12 rounded-lg shadow-lg sm:w-5/12"
         ></img>
         <div className="relative inline-block h-64 mx-8">
           <Blob2 />
@@ -111,7 +111,7 @@ export default () => (
       <div className="flex flex-wrap-reverse items-center justify-center mt-16 md:mt-32">
         <div className="relative inline-block h-64 mx-8">
           <Blob3 />
-          <div className="relative z-10 flex flex-wrap items-center justify-center py-4">
+          <div className="relative z-10 flex flex-wrap items-center justify-center py-6">
             <div className="relative z-10 mx-4 text-main-600">
               <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl text-main-600">
                 I write posts
@@ -128,7 +128,7 @@ export default () => (
         </div>
         <img
           src="/fluff/2.png"
-          className="z-10 w-10/12 rounded-lg shadow-lg sm:w-5/12 md:w-5/12"
+          className="z-10 w-10/12 rounded-lg shadow-lg sm:w-5/12 md:w-5/12 lg:w-3/12"
         ></img>
       </div>
     </div>
