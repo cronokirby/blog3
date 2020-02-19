@@ -1,6 +1,7 @@
 import { Link } from 'gatsby';
 import React from 'react';
 import { Helmet } from 'react-helmet';
+import Nav from '../../components/Nav'
 
 const Blob1 = () => (
   <svg
@@ -66,13 +67,7 @@ export default () => (
         content="This is Lúcás Meier's personal website."
       ></meta>
     </Helmet>
-    <nav>
-      <ul className="flex justify-around py-2 text-2xl font-bold text-white md:mx-8">
-        <li>Posts</li>
-        <li>Contact</li>
-        <li>Projects</li>
-      </ul>
-    </nav>
+    <Nav />
     <div className="flex flex-col items-center w-full mt-12 md:mt-24">
       <div className="relative inline-block">
         <Blob1 />
@@ -86,7 +81,7 @@ export default () => (
       <div className="flex flex-wrap items-center justify-center mt-16 md:mt-32">
         <img
           src="/fluff/1.png"
-          className="z-10 w-11/12 rounded-lg shadow-lg sm:w-5/12 md:w-5/12"
+          className="z-10 w-10/12 rounded-lg shadow-lg sm:w-5/12 md:w-5/12"
         ></img>
         <div className="relative inline-block h-64 mx-8">
           <Blob2 />
@@ -133,7 +128,7 @@ export default () => (
         </div>
         <img
           src="/fluff/2.png"
-          className="z-10 w-11/12 rounded-lg shadow-lg sm:w-5/12 md:w-5/12"
+          className="z-10 w-10/12 rounded-lg shadow-lg sm:w-5/12 md:w-5/12"
         ></img>
       </div>
     </div>
