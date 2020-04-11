@@ -2,7 +2,7 @@ module.exports = {
   siteMetadata: {
     title: "Cronokirby's Blog",
     description: 'A blog about programming and other things',
-    siteUrl: `https://cronokirby.github.io`,
+    siteUrl: `https://cronokirby.com/`,
   },
   plugins: [
     'gatsby-plugin-feed',
