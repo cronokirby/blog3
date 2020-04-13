@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'gatsby';
 
 const PostCard = ({ ttr, title, date, image, path, tags }) => (
-  <li className="flex flex-col justify-between w-11/12 px-2 py-2 mx-4 my-4 text-gray-800 bg-white rounded shadow-md sm:w-64">
+  <li className="flex flex-col justify-between px-2 py-2 text-gray-800 bg-white rounded shadow-md">
     <div className="z-10">
       <div className="h-48">
         <img
@@ -35,7 +35,7 @@ export default ({ data }) => {
   const edges = data.allMarkdownRemark.edges;
 
   const posts = (
-    <ul className="flex flex-wrap justify-center w-11/12 mx-auto lg:w-1/2 sm:justify-start">
+    <ul className="grid w-11/12 gap-8 mx-auto sm:grid-cols-1 md:grid-cols-3 lg:w-2/3 xl:w-1/2">
       {edges.map(
         ({
           node: {
