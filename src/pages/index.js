@@ -1,7 +1,7 @@
 import { Link } from 'gatsby';
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import Nav from '../../components/Nav'
+import Layout from '../../components/Layout';
 
 const Blob1 = () => (
   <svg
@@ -58,6 +58,73 @@ const Blob3 = () => (
   </svg>
 );
 
+const Content = () => (
+  <div className="flex flex-col items-center w-full mt-12 md:mt-24">
+    <div className="relative inline-block">
+      <Blob1 />
+      <h1 className="relative z-10 text-4xl font-bold sm:text-5xl md:text-8xl text-main-600">
+        Lúcás Meier
+      </h1>
+      <h2 className="relative z-10 text-2xl sm:text-3xl md:text-6xl text-main-600">
+        Fullstack Developer
+      </h2>
+    </div>
+    <div className="flex flex-wrap items-center justify-center mt-16 md:mt-32">
+      <img
+        src="/fluff/1.png"
+        className="z-10 w-10/12 rounded-lg shadow-lg sm:w-5/12"
+      ></img>
+      <div className="relative inline-block h-64 mx-8">
+        <Blob2 />
+        <div className="relative z-10 flex flex-wrap items-center justify-center py-4">
+          <div className="relative z-10 mx-4 text-main-600">
+            <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl text-main-600">
+              I make websites
+            </h1>
+            <p className="text-sm">
+              But not{' '}
+              <a href="https://icons8.com/ouch" className="underline">
+                these illustrations
+              </a>
+              .
+            </p>
+            <p className="w-64 text-lg">
+              From what you see, to what goes on behind the curtains, I like
+              making great products.
+            </p>
+            <Link to="/projects" className="mt-4 text-xl font-bold underline">
+              See My Work!
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div className="flex flex-wrap-reverse items-center justify-center mt-16 md:mt-32">
+      <div className="relative inline-block h-64 mx-8">
+        <Blob3 />
+        <div className="relative z-10 flex flex-wrap items-center justify-center py-6">
+          <div className="relative z-10 mx-4 text-main-600">
+            <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl text-main-600">
+              I write posts
+            </h1>
+            <p className="w-64 text-lg">
+              I write about programming, technology, and whatever else is on my
+              mind.
+            </p>
+            <Link to="/posts" className="mt-4 text-xl font-bold underline">
+              See My Posts!
+            </Link>
+          </div>
+        </div>
+      </div>
+      <img
+        src="/fluff/2.png"
+        className="z-10 w-10/12 rounded-lg shadow-lg sm:w-5/12 md:w-5/12 lg:w-3/12"
+      ></img>
+    </div>
+  </div>
+);
+
 export default () => (
   <>
     <Helmet>
@@ -67,70 +134,8 @@ export default () => (
         content="This is Lúcás Meier's personal website."
       ></meta>
     </Helmet>
-    <Nav />
-    <div className="flex flex-col items-center w-full mt-12 md:mt-24">
-      <div className="relative inline-block">
-        <Blob1 />
-        <h1 className="relative z-10 text-4xl font-bold sm:text-5xl md:text-8xl text-main-600">
-          Lúcás Meier
-        </h1>
-        <h2 className="relative z-10 text-2xl sm:text-3xl md:text-6xl text-main-600">
-          Fullstack Developer
-        </h2>
-      </div>
-      <div className="flex flex-wrap items-center justify-center mt-16 md:mt-32">
-        <img
-          src="/fluff/1.png"
-          className="z-10 w-10/12 rounded-lg shadow-lg sm:w-5/12"
-        ></img>
-        <div className="relative inline-block h-64 mx-8">
-          <Blob2 />
-          <div className="relative z-10 flex flex-wrap items-center justify-center py-4">
-            <div className="relative z-10 mx-4 text-main-600">
-              <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl text-main-600">
-                I make websites
-              </h1>
-              <p className="text-sm">
-                But not{' '}
-                <a href="https://icons8.com/ouch" className="underline">
-                  these illustrations
-                </a>
-                .
-              </p>
-              <p className="w-64 text-lg">
-                From what you see, to what goes on behind the curtains, I like
-                making great products.
-              </p>
-              <Link to="/projects" className="mt-4 text-xl font-bold underline">
-                See My Work!
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="flex flex-wrap-reverse items-center justify-center mt-16 md:mt-32">
-        <div className="relative inline-block h-64 mx-8">
-          <Blob3 />
-          <div className="relative z-10 flex flex-wrap items-center justify-center py-6">
-            <div className="relative z-10 mx-4 text-main-600">
-              <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl text-main-600">
-                I write posts
-              </h1>
-              <p className="w-64 text-lg">
-                I write about programming, technology, and whatever else is on
-                my mind.
-              </p>
-              <Link to="/posts" className="mt-4 text-xl font-bold underline">
-                See My Posts!
-              </Link>
-            </div>
-          </div>
-        </div>
-        <img
-          src="/fluff/2.png"
-          className="z-10 w-10/12 rounded-lg shadow-lg sm:w-5/12 md:w-5/12 lg:w-3/12"
-        ></img>
-      </div>
-    </div>
+    <Layout>
+      <Content />
+    </Layout>
   </>
 );

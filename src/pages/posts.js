@@ -1,17 +1,21 @@
 import React from 'react';
-import { Helmet } from 'react-helmet'
+import { Helmet } from 'react-helmet';
 import { graphql } from 'gatsby';
 import PostList from '../../components/PostList';
-import Nav from '../../components/Nav';
+import Layout from '../../components/Layout';
 
 export default ({ data }) => (
   <>
-  <Helmet>
-    <title>Posts | Cronokirby</title>
-    <meta name="description" content="This is where all of Cronokirby's blog posts can be found"></meta>
-  </Helmet>
-    <Nav />
-    <PostList data={data} />
+    <Helmet>
+      <title>Posts | Cronokirby</title>
+      <meta
+        name="description"
+        content="This is where all of Cronokirby's blog posts can be found"
+      ></meta>
+    </Helmet>
+    <Layout>
+      <PostList data={data} />
+    </Layout>
   </>
 );
 

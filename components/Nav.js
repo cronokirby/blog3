@@ -65,7 +65,7 @@ const Twitter = () => (
 
 export default () => (
   <nav>
-    <ul className="flex items-baseline justify-around py-2 mx-auto mb-4 text-2xl px-4 sm:text-3xl font-bold text-white sm:w-3/4 lg:w-1/2">
+    <ul className="flex items-baseline justify-around px-4 py-2 mx-auto mb-4 text-2xl font-bold text-white sm:text-3xl sm:w-3/4 lg:w-1/2">
       <li>
         <Link to="/posts" className="mr-4 hover:underline hover:text-main-200 md:mr-8">
           Posts

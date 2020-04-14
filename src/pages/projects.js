@@ -1,7 +1,7 @@
 import { graphql } from 'gatsby';
 import React from 'react';
 import Helmet from 'react-helmet';
-import Nav from '../../components/Nav';
+import Layout from '../../components/Layout';
 
 const ProjectCard = ({ html, description, title, tech, link, image, even }) => {
   return (
@@ -74,10 +74,11 @@ export default ({ data }) => {
           content="This is where all of Cronokirby's projects can be found"
         />
       </Helmet>
-      <Nav />
-      <ul className="flex flex-wrap justify-center mx-auto lg:w-1/2">
-        {projects}
-      </ul>
+      <Layout>
+        <ul className="flex flex-wrap justify-center mx-auto lg:w-1/2">
+          {projects}
+        </ul>
+      </Layout>
     </>
   );
 };

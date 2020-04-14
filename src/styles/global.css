@@ -27,7 +27,7 @@ html, body {
 
 .blog-post-content {
   @apply font-sans;
-  font-size: 1.1em;
+  font-size: 1.3em;
 }
 
 .blog-post-content p {
@@ -35,23 +35,23 @@ html, body {
 }
 
 .blog-post-content h1 {
-  @apply text-4xl font-bold;
-}
-
-.blog-post-content h2 {
-  @apply text-3xl font-bold;
-}
-
-.blog-post-content h3 {
   @apply text-2xl font-bold;
 }
 
-.blog-post-content h4 {
+.blog-post-content h2 {
   @apply text-xl font-bold;
 }
 
+.blog-post-content h3 {
+  @apply text-lg font-bold;
+}
+
+.blog-post-content h4 {
+  @apply font-bold;
+}
+
 .blog-post-content pre {
-  @apply font-mono shadow-inner rounded bg-white px-3 py-2 text-gray-700;
+  @apply px-3 py-2 font-mono text-gray-700 bg-white rounded shadow-inner;
 }
 
 .blog-post-content a {
