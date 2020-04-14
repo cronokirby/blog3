@@ -16,12 +16,12 @@ const ProjectCard = ({ html, description, title, tech, link, image, even }) => {
         </div>
       )}
 
-      <div className="px-4 py-2 mx-4 my-4 text-gray-800 bg-white rounded shadow-md">
-        <h1 className="text-3xl font-bold hover:underline">
+      <div className="px-4 py-2 mx-4 my-4 rounded shadow-md text-nord6 bg-nord0">
+        <h1 className="text-3xl font-bold hover:underlin">
           <a href={link}>{title}</a>
         </h1>
-        <h2 className="w-64 text-lg text-brown-800">{description}</h2>
-        <ul className="flex flex-wrap w-64 my-2 italic text-brown-700">
+        <h2 className="w-64 text-lg text-nord4">{description}</h2>
+        <ul className="flex flex-wrap w-64 my-2 italic text-nord9">
           {tech.map(t => (
             <li className="mr-3">{t}</li>
           ))}

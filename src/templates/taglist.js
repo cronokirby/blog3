@@ -1,8 +1,8 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 import PostList from '../../components/PostList';
-import Nav from '../../components/Nav';
 import Helmet from 'react-helmet';
+import Layout from '../../components/Layout';
 
 export default ({ data, pageContext }) => (
   <>
@@ -13,8 +13,9 @@ export default ({ data, pageContext }) => (
         content={`These are all of Cronokirby's blogposts under "${pageContext.tag}"`}
       />
     </Helmet>
-    <Nav />
-    <PostList data={data} />
+    <Layout>
+      <PostList data={data} />
+    </Layout>
   </>
 );
 
