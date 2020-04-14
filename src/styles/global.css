@@ -22,7 +22,13 @@ html, body {
 }
 
 .h-128 {
-  height: 36rem;
+  height: 18rem;
+}
+
+@media (min-width: 768px) {
+  .h-128 {
+    height: 28rem;
+  }
 }
 
 .blog-post-content {
