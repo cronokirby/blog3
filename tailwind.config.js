@@ -1,3 +1,5 @@
+const defaultTheme = require('tailwindcss/defaultTheme');
+
 module.exports = {
   theme: {
     extend: {
@@ -22,6 +24,12 @@ module.exports = {
       fontSize: {
         '8xl': '6rem',
       },
+      fontFamily: {
+        mono: [
+          'Iosevka',
+          ...defaultTheme.fontFamily.mono
+        ]
+      }
     },
   },
   variants: {},

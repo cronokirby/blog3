@@ -269,21 +269,16 @@ which fit the bill perfectly.
 
 ```ts
 enum TokenType {
-  // =
-  Equal,
-  // +
-  Plus,
-  // {
-  LeftBrace,
-  // }
-  RightBrace,
-  // ;
-  SemiColon,
+  Equal = '=',
+  Plus = '+',
+  LeftBrace = '{',
+  RightBrace = '}',
+  SemiColon = ';',
   // Keywords
-  Let,
-  In,
+  Let = 'let',
+  In = 'in',
   // These will need data attached
-  Number,
+  Number = 'Number',
   Name,
 }
 ```
@@ -303,3 +298,447 @@ interface Token {
 
 For the last two types of token, we'll make sure to include `data` along with the type,
 so our parser can have that information as well.
+
+## Lexer
+
+Now let's actually write a lexer for this simple language. Our goal, once again, will
+be to take in our input string, and start spitting out tokens. Our focus here will
+be to make this concrete, through an actual function.
+
+What is a "stream" anyways? How do we represent this in Typescript? One choice would be
+to have a function like this
+
+```ts
+function lex(input: string): Token[]
+```
+
+One thing I don't like about this is that we have to explicitly construct the entire
+list of tokens. This can be inefficient in later stages, since we're keeping the entire
+token stream in memory, instead of "streaming" them one by one.
+
+### Generators
+
+[Generators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator)
+are a better way of providing a "stream" of data from a function.
+
+Here's a simple generator returning integers:
+
+```ts
+function* numbers() {
+  for (let i = 0; i < 100; ++i) {
+    yield i;
+  }
+}
+```
+
+Instead of just returning a single value, we can instead yield many values. This function
+will yield all the integers up to 100. We can consume this generator like this:
+
+```ts
+for (const n of numbers()) {
+  console.log(n);
+}
+``` 
+
+And we'll end up printing all the numbers that this generator yields.
+
+### Back to lexing
+
+Let's create a Lexer class that will contain the state we need when lexing, along
+with a few different methods.
+
+```ts
+class Lexer {
+  private i: number;
+
+  constructor(private readonly input: string) {
+    this.i = 0;
+  }
+
+  peek() {
+    if (this.i >= this.input.length) {
+      return null;
+    }
+    return this.input[this.i];
+  }
+
+  advance() {
+    this.i++;
+  }
+}
+```
+
+The `peek` method returns the current character, if available, and the `advance` method
+allows us to move on to further characters.
+We'll be able to write the lexer by combining these two methods.
+
+The next method we'll write is:
+
+```ts
+*[Symbol.iterator]() {
+  yield { type: Token.Equal };
+}
+```
+
+This allows us to write things like:
+
+```ts
+for (const token of new Lexer('a + b')) {
+}
+```
+
+### Simple Tokens
+
+The one character operators are very easy to lex:
+
+```ts
+*[Symbol.iterator]() {
+  for (let peek = this.peek(); peek !== null; peek = this.peek()) {
+    switch (peek) {
+      case '=':
+        self.advance();
+        yield { type: Token.Equal };
+        break;
+      case '+':
+        self.advance();
+        yield { type: Token.Plus };
+        break;
+      case '{':
+        self.advance();
+        yield { type: Token.LeftBrace };
+        break;
+      case '}':
+        self.advance();
+        yield { type: Token.RightBrace };
+        break;
+      case ';':
+        self.advance();
+        yield { type: Token.SemiColon };
+        break;
+  }
+}
+```
+
+We look at the next character, and as long as it's valid, we look at which single operator
+it matches, accept the character by advancing, and then yield the corresponding token.
+Everything is simple, because we only need to see one character to match it with a token,
+so far.
+
+Let's add support for numbers now:
+
+```ts
+*[Symbol.iterator]() {
+  for (let peek = this.peek(); peek !== null; peek = this.peek()) {
+    switch (peek) {
+      case '=':
+        // Single tokens ...
+      default:
+        if (isNumber(peek)) {
+          const data = self.number();
+          yield { type: Token.Number, data }
+        }
+        break;
+  }
+}
+
+number() {
+  let acc = '';
+  for (
+    let peek = this.peek();
+    peek !== null && isNumber(peek);
+    peek = this.peek()
+  ) {
+    acc += peek;
+    this.advance();
+  }
+  return acc;
+}
+
+function isNumber(char: string): boolean {
+  return /[0-9]/.test(char);
+}
+```
+
+After matching all the single tokens, we then need to check whether or not the character
+is numeric. If it is, then delegate to the `number` method. The `number` method keeps
+feeding numeric characters into a big string, and returns once it sees a non-numeric
+character. It *doesn't* consume that character, so it's available for parsing.
+
+### Keywords / Names
+
+We'll be doing names similarly to numbers:
+
+```ts
+*[Symbol.iterator]() {
+  for (let peek = this.peek(); peek !== null; peek = this.peek()) {
+    switch (peek) {
+    case '=':
+      // Single tokens ...
+    default:
+      if (isNumber(peek)) {
+        const data = this.number();
+        yield { type: TokenType.Number, data }
+      } else if (isLowerAlpha(peek)) {
+        const data = this.string();
+        yield { type: TokenType.Name, data }
+      }
+      break;
+  }
+}
+
+string() {
+  let acc = '';
+  for (
+    let peek = this.peek();
+    peek !== null && isLowerAlpha(peek);
+    peek = this.peek()
+  ) {
+    acc += peek;
+    this.advance();
+  }
+  return acc;
+}
+
+function isLowerAlpha(char: string): boolean {
+  return /[a-z]/.test(char)
+}
+```
+
+We have the same thing as we do for numbers, except that we're accepting `abc...` instead
+of `012..`. For the sake of simplicity, I haven't included the full character range. In
+practice you'd want to tweak this code slightly so that things like:
+
+```
+a22
+aA3
+snake_case
+```
+
+are also allowed by the function.
+
+The only tokens we have left are `let` and `in`. One problem we didn't have previously
+is that these tokens are currently recognized, but as names:
+
+```ts
+{ type: TokenType.Name, data: 'let' }
+{ type: TokenType.Name, data: 'in' }
+```
+
+We just need to check that the name we've just parsed doesn't correspond to one
+of the keywords, in which case we return the specialized token:
+
+```ts
+const data = this.string();
+if (data === 'let') {
+  yield { type: TokenType.Let };
+} else if (data === 'in') {
+  yield { type: TokenType.In };
+} else {
+  yield { type: TokenType.Name, data };
+}
+```
+
+Finally, let's throw an error if we don't recognize a character, instead of just stalling:
+
+```ts
+*[Symbol.iterator]() {
+  for (let peek = this.peek(); peek !== null; peek = this.peek()) {
+    switch (peek) {
+      default:
+        if (isNumber(peek)) {
+          // handling number
+        } else if (isLowerAlpha(peek)) {
+          // handling strings
+        } else {
+          throw new Error(`Unrecognized character: '${peek}'`);
+        }
+        break;
+    }
+  }
+}
+```
+
+### Skipping Whitespace
+
+We can lex `a+3`, but we can't lex `a + 3` yet. This is because we're not handling
+any of the whitespace characters yet. We just need to add another case to our
+matching:
+
+```ts
+function isWhitespace(char: string): boolean {
+  return /[\n\r\s]/.char(string);
+}
+
+*[Symbol.iterator]() {
+  for (let peek = this.peek(); peek !== null; peek = this.peek()) {
+    switch (peek) {
+      case '=':
+      // Single tokens...
+      default:
+        if (isWhitespace(char)) {
+          this.advance();
+        } else if // ...
+        break;
+    }
+  }
+}
+```
+
+At this point, we have a complete lexer:
+
+```ts
+function isNumber(char: string): boolean {
+  return /[0-9]/.test(char);
+}
+
+function isLowerAlpha(char: string): boolean {
+  return /[a-z]/.test(char)
+}
+
+function isWhitespace(char: string): boolean {
+  return /[\n\r\s]/.test(char);
+}
+
+class Lexer {
+  private i: number;
+
+  constructor(private readonly input: string) {
+    this.i = 0;
+  }
+
+  peek() {
+    if (this.i >= this.input.length) {
+      return null;
+    }
+    return this.input[this.i];
+  }
+
+  advance() {
+    this.i++;
+  }
+
+  *[Symbol.iterator]() {
+    for (let peek = this.peek(); peek !== null; peek = this.peek()) {
+      switch (peek) {
+        case '=':
+          this.advance();
+          yield { type: TokenType.Equal };
+          break;
+        case '+':
+          this.advance();
+          yield { type: TokenType.Plus };
+          break;
+        case '{':
+          this.advance();
+          yield { type: TokenType.LeftBrace };
+          break;
+        case '}':
+          this.advance();
+          yield { type: TokenType.RightBrace };
+          break;
+        case ';':
+          this.advance();
+          yield { type: TokenType.SemiColon };
+          break;
+        default:
+          if (isNumber(peek)) {
+            const data = this.number();
+            yield { type: TokenType.Number, data };
+          } else if (isLowerAlpha(peek)) {
+            const data = this.string();
+            if (data === 'let') {
+              yield { type: TokenType.Let };
+            } else if (data === 'in') {
+              yield { type: TokenType.In };
+            } else {
+              yield { type: TokenType.Name, data };
+            }
+          } else {
+            throw new Error(`Unrecognized character: '${peek}'`);
+          }
+          break;
+      }
+    }
+  }
+
+  number() {
+    let acc = '';
+    for (
+      let peek = this.peek();
+      peek !== null && isNumber(peek);
+      peek = this.peek()
+    ) {
+      acc += peek;
+      this.advance();
+    }
+    return acc;
+  }
+
+  string() {
+    let acc = '';
+    for (
+      let peek = this.peek();
+      peek !== null && isLowerAlpha(peek);
+      peek = this.peek()
+    ) {
+      acc += peek;
+      this.advance();
+    }
+    return acc;
+  }
+}
+```
+
+We can test the program like, this:
+
+```ts
+for (const token of new Lexer('a + 45')) {
+  console.log(token);
+}
+```
+
+This should print out:
+
+```
+{ type: "Name", data: "a" }
+{ type: "+" }
+{ type: "Number", data: "45" }
+```
+
+# Becoming Whitespace Sensitive
+
+Right now our language ignores all whitespace betwen characters:
+
+```
+let x = a + b in x + x
+```
+
+Lexes the exact same way as
+
+```
+let x
+= a +
+b     in x +
+  x
+```
+
+Additionally, we require explicit semicolons and braces to be able to handle the structure
+of our program. If we had written the parser, it would be working on semicolon tokens
+and brace tokens:
+
+```
+{
+f = x => x * x;
+
+y =
+  let {
+    z = 4
+  } in z + f z
+}
+```
+
+I mentioned that we won't go into parsing in this post. The reason is that a parser
+working on explicit semicolons and braces will be just fine. Our goal is to modify
+how the lexer works to become whitespace sensitive, while keeping the parser the same.
+
+To do this, we need to be able to look at the indentation

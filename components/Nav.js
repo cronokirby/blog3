@@ -1,6 +1,30 @@
 import React from 'react';
 import { Link } from 'gatsby';
 
+const Moon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    height="32"
+    viewBox="0 0 24 24"
+    width="32"
+  >
+    <path d="M10 2c-1.82 0-3.53.5-5 1.35C7.99 5.08 10 8.3 10 12s-2.01 6.92-5 8.65C6.47 21.5 8.18 22 10 22c5.52 0 10-4.48 10-10S15.52 2 10 2z" />
+    <path d="M0 0h24v24H0z" fill="none" />
+  </svg>
+);
+
+const Sun = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    height="32"
+    viewBox="0 0 24 24"
+    width="32"
+  >
+    <path d="M0 0h24v24H0z" fill="none" />
+    <path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z" />
+  </svg>
+);
+
 const Github = () => (
   <svg
     width="32px"
@@ -56,41 +80,110 @@ const Twitter = () => (
     className="fill-current"
   >
     <g>
-      <path
-        d="M256,25.4500259 C246.580841,29.6272672 236.458451,32.4504868 225.834156,33.7202333 C236.678503,27.2198053 245.00583,16.9269929 248.927437,4.66307685 C238.779765,10.6812633 227.539325,15.0523376 215.57599,17.408298 C205.994835,7.2006971 192.34506,0.822 177.239197,0.822 C148.232605,0.822 124.716076,24.3375931 124.716076,53.3423116 C124.716076,57.4586875 125.181462,61.4673784 126.076652,65.3112644 C82.4258385,63.1210453 43.7257252,42.211429 17.821398,10.4359288 C13.3005011,18.1929938 10.710443,27.2151234 10.710443,36.8402889 C10.710443,55.061526 19.9835254,71.1374907 34.0762135,80.5557137 C25.4660961,80.2832239 17.3681846,77.9207088 10.2862577,73.9869292 C10.2825122,74.2060448 10.2825122,74.4260967 10.2825122,74.647085 C10.2825122,100.094453 28.3867003,121.322443 52.413563,126.14673 C48.0059695,127.347184 43.3661509,127.988612 38.5755734,127.988612 C35.1914554,127.988612 31.9009766,127.659938 28.694773,127.046602 C35.3777973,147.913145 54.7742053,163.097665 77.7569918,163.52185 C59.7820257,177.607983 37.1354036,186.004604 12.5289147,186.004604 C8.28987161,186.004604 4.10888474,185.75646 0,185.271409 C23.2431033,200.173139 50.8507261,208.867532 80.5109185,208.867532 C177.116529,208.867532 229.943977,128.836982 229.943977,59.4326002 C229.943977,57.1552968 229.893412,54.8901664 229.792282,52.6381454 C240.053257,45.2331635 248.958338,35.9825545 256,25.4500259"
-      ></path>
+      <path d="M256,25.4500259 C246.580841,29.6272672 236.458451,32.4504868 225.834156,33.7202333 C236.678503,27.2198053 245.00583,16.9269929 248.927437,4.66307685 C238.779765,10.6812633 227.539325,15.0523376 215.57599,17.408298 C205.994835,7.2006971 192.34506,0.822 177.239197,0.822 C148.232605,0.822 124.716076,24.3375931 124.716076,53.3423116 C124.716076,57.4586875 125.181462,61.4673784 126.076652,65.3112644 C82.4258385,63.1210453 43.7257252,42.211429 17.821398,10.4359288 C13.3005011,18.1929938 10.710443,27.2151234 10.710443,36.8402889 C10.710443,55.061526 19.9835254,71.1374907 34.0762135,80.5557137 C25.4660961,80.2832239 17.3681846,77.9207088 10.2862577,73.9869292 C10.2825122,74.2060448 10.2825122,74.4260967 10.2825122,74.647085 C10.2825122,100.094453 28.3867003,121.322443 52.413563,126.14673 C48.0059695,127.347184 43.3661509,127.988612 38.5755734,127.988612 C35.1914554,127.988612 31.9009766,127.659938 28.694773,127.046602 C35.3777973,147.913145 54.7742053,163.097665 77.7569918,163.52185 C59.7820257,177.607983 37.1354036,186.004604 12.5289147,186.004604 C8.28987161,186.004604 4.10888474,185.75646 0,185.271409 C23.2431033,200.173139 50.8507261,208.867532 80.5109185,208.867532 C177.116529,208.867532 229.943977,128.836982 229.943977,59.4326002 C229.943977,57.1552968 229.893412,54.8901664 229.792282,52.6381454 C240.053257,45.2331635 248.958338,35.9825545 256,25.4500259"></path>
     </g>
   </svg>
 );
 
+function retrieveStoredDarkMode() {
+  const stored = window.localStorage.getItem('color-scheme');
+  if (stored !== 'dark' && stored !== 'light') {
+    return null;
+  }
+  return stored;
+}
+
+function darkModePreferenceMedia() {
+  return window.matchMedia('(prefers-color-scheme: dark)');
+}
+
+function getDarkModePreference() {
+  return darkModePreferenceMedia().matches;
+}
+
+function onDarkModePreferenceChange(onChange) {
+  const media = darkModePreferenceMedia();
+  media.addListener(e => onChange(e.matches));
+}
+
+function useDarkMode() {
+  const stored = retrieveStoredDarkMode();
+  console.log('stored', stored);
+  const initialDark =
+    stored !== null ? stored === 'dark' : getDarkModePreference();
+  const [dark, setDark] = React.useState(initialDark);
+  React.useEffect(() => {
+    if (dark) {
+      document.body.setAttribute('data-theme', 'dark');
+      document.body.classList.add('dark');
+    } else {
+      document.body.setAttribute('data-theme', 'light');
+      document.body.classList.remove('dark');
+    }
+  }, [dark]);
+  const saveDark = d => {
+    console.log('saving', d);
+    window.localStorage.setItem('color-scheme', d ? 'dark' : 'light');
+  };
+  const setDarkAndSave = d => {
+    setDark(d);
+    saveDark(d);
+  };
+  onDarkModePreferenceChange(setDarkAndSave);
+  const toggle = () =>
+    setDark(d => {
+      saveDark(!d);
+      return !d;
+    });
+
+  return { dark, toggle };
+}
+
+function DarkModeButton() {
+  const { dark, toggle } = useDarkMode();
+  console.log(dark);
+
+  const inner = dark ? <Moon /> : <Sun />;
+
+  return (
+    <button className="fill-current" onClick={toggle}>
+      {inner}
+    </button>
+  );
+}
+
 export default () => (
   <nav>
-    <ul className="flex items-baseline justify-around px-4 py-2 mx-auto mb-4 text-2xl font-bold text-nord6 sm:text-3xl sm:w-3/4 lg:w-1/2">
+    <ul className="flex items-baseline justify-around px-4 py-2 mx-auto mb-4 text-xl font-bold text-main sm:text-3xl sm:w-3/4 lg:w-1/2">
       <li>
-        <Link to="/posts" className="mr-4 hover:underline hover:text-nord4 md:mr-8">
+        <Link to="/posts" className="mr-4 hover:underline text-hover md:mr-8">
           Posts
         </Link>
       </li>
       <li>
-        <Link to="/projects" className="hover:underline hover:text-nord4 sm:mx-8">
+        <Link to="/projects" className="hover:underline text-hover sm:mx-8">
           Projects
         </Link>
       </li>
       <li className="flex-grow"></li>
-      <li className="hover:text-nord4">
+      <li className="text-hover">
         <a href="https://github.com/cronokirby">
           <Github />
         </a>
       </li>
-      <li className="ml-4 sm:ml-8 hover:text-nord4">
+      <li className="ml-4 sm:ml-8 text-hover">
         <Link to="/rss.xml">
           <RSS />
         </Link>
       </li>
-      <li className="ml-4 sm:ml-8 hover:text-nord4">
+      <li className="ml-4 sm:ml-8 text-hover">
         <a href="https://twitter.com/cronokirby">
           <Twitter />
         </a>
+      </li>
+      <li className="flex-grow"></li>
+      <li className="ml-4 sm:ml-8 text-hover">
+        <DarkModeButton />
       </li>
     </ul>
   </nav>
