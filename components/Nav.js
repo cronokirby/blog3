@@ -107,11 +107,21 @@ function onDarkModePreferenceChange(onChange) {
 }
 
 function useDarkMode() {
-  const stored = retrieveStoredDarkMode();
-  console.log('stored', stored);
-  const initialDark =
-    stored !== null ? stored === 'dark' : getDarkModePreference();
-  const [dark, setDark] = React.useState(initialDark);
+  const [dark, setDark] = React.useState(false);
+  const saveDark = d => {
+    window.localStorage.setItem('color-scheme', d ? 'dark' : 'light');
+  };
+  const setDarkAndSave = d => {
+    setDark(d);
+    saveDark(d);
+  };
+  React.useEffect(() => {
+    const stored = retrieveStoredDarkMode();
+    const initialDark =
+      stored !== null ? stored === 'dark' : getDarkModePreference();
+    setDark(initialDark);
+    onDarkModePreferenceChange(setDarkAndSave);
+  }, []);
   React.useEffect(() => {
     if (dark) {
       document.body.setAttribute('data-theme', 'dark');
@@ -121,15 +131,6 @@ function useDarkMode() {
       document.body.classList.remove('dark');
     }
   }, [dark]);
-  const saveDark = d => {
-    console.log('saving', d);
-    window.localStorage.setItem('color-scheme', d ? 'dark' : 'light');
-  };
-  const setDarkAndSave = d => {
-    setDark(d);
-    saveDark(d);
-  };
-  onDarkModePreferenceChange(setDarkAndSave);
   const toggle = () =>
     setDark(d => {
       saveDark(!d);
@@ -141,7 +142,6 @@ function useDarkMode() {
 
 function DarkModeButton() {
   const { dark, toggle } = useDarkMode();
-  console.log(dark);
 
   const inner = dark ? <Moon /> : <Sun />;
 
