@@ -1,3 +1,57 @@
+function *iterString(input: string) {
+  for (const c of input) {
+    yield c;
+  }
+}
+
+type Peeked<T> = { ready: true; value: T } | { ready: false };
+
+class Peekable<T> implements IterableIterator<T> {
+  private _peeked: Peeked<T> = { ready: false };
+  private _iter: Iterator<T>;
+
+  constructor(iter: Iterable<T>) {
+    this._iter = iter[Symbol.iterator]();
+  }
+
+  peek() {
+    if (this._peeked.ready) {
+      return { done: false, value: this._peeked.value };
+    } else {
+      const result = this._iter.next();
+      if (!result.done) {
+        this._peeked = { ready: true, value: result.value };
+      }
+      return result;
+    }
+  }
+
+  next() {
+    if (this._peeked.ready) {
+      const value = this._peeked.value;
+      this._peeked = { ready: false };
+      return { done: false, value };
+    } else {
+      return this._iter.next();
+    }
+  }
+
+  [Symbol.iterator]() {
+    return this;
+  }
+}
+
+enum LinePos {
+  Start,
+  Middle,
+}
+
+interface Annotated<T> {
+  item: T;
+  linePos: LinePos;
+  col: number;
+}
+
 enum TokenType {
   Equal = '=',
   Plus = '+',
@@ -29,52 +83,41 @@ function isWhitespace(char: string): boolean {
   return /[\n\r\s]/.test(char);
 }
 
-class Lexer {
-  private i: number;
+class Lexer implements Iterable<Token> {
+  private _iter: Peekable<string>;
 
-  constructor(private readonly input: string) {
-    this.i = 0;
-  }
-
-  peek() {
-    if (this.i >= this.input.length) {
-      return null;
-    }
-    return this.input[this.i];
-  }
-
-  advance() {
-    this.i++;
+  constructor(input: string) {
+    this._iter = new Peekable(iterString(input));
   }
 
   *[Symbol.iterator]() {
-    for (let peek = this.peek(); peek !== null; peek = this.peek()) {
-      switch (peek) {
+    for (let peek = this._iter.peek(); !peek.done; peek = this._iter.peek()) {
+      switch (peek.value) {
         case '=':
-          this.advance();
+          this._iter.next();
           yield { type: TokenType.Equal };
           break;
         case '+':
-          this.advance();
+          this._iter.next();
           yield { type: TokenType.Plus };
           break;
         case '{':
-          this.advance();
+          this._iter.next();
           yield { type: TokenType.LeftBrace };
           break;
         case '}':
-          this.advance();
+          this._iter.next();
           yield { type: TokenType.RightBrace };
           break;
         case ';':
-          this.advance();
+          this._iter.next();
           yield { type: TokenType.SemiColon };
           break;
         default:
-          if (isNumber(peek)) {
+          if (isNumber(peek.value)) {
             const data = this.number();
             yield { type: TokenType.Number, data };
-          } else if (isLowerAlpha(peek)) {
+          } else if (isLowerAlpha(peek.value)) {
             const data = this.string();
             if (data === 'let') {
               yield { type: TokenType.Let };
@@ -83,10 +126,10 @@ class Lexer {
             } else {
               yield { type: TokenType.Name, data };
             }
-          } else if (isWhitespace(peek)) {
-            this.advance();
+          } else if (isWhitespace(peek.value)) {
+            this._iter.next();
           } else {
-            throw new Error(`Unrecognized character: '${peek}'`);
+            throw new Error(`Unrecognized character: '${peek.value}'`);
           }
           break;
       }
@@ -96,12 +139,12 @@ class Lexer {
   number() {
     let acc = '';
     for (
-      let peek = this.peek();
-      peek !== null && isNumber(peek);
-      peek = this.peek()
+      let peek = this._iter.peek();
+      !peek.done && isNumber(peek.value);
+      peek = this._iter.peek()
     ) {
-      acc += peek;
-      this.advance();
+      acc += peek.value;
+      this._iter.next();
     }
     return acc;
   }
@@ -109,12 +152,12 @@ class Lexer {
   string() {
     let acc = '';
     for (
-      let peek = this.peek();
-      peek !== null && isLowerAlpha(peek);
-      peek = this.peek()
+      let peek = this._iter.peek();
+      !peek.done && isLowerAlpha(peek.value);
+      peek = this._iter.peek()
     ) {
-      acc += peek;
-      this.advance();
+      acc += peek.value;
+      this._iter.next();
     }
     return acc;
   }

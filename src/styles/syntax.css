@@ -16,7 +16,7 @@ code[class*='language-'],
 pre[class*='language-'] {
   color: var(--text-color);
   background: none;
-  font-family: 'Iosevka', 'Fira Code', 'Input Mono', Consolas, Monaco, 'Andale Mono',
+  font-family: 'Fira Code', 'Input Mono', Consolas, Monaco, 'Andale Mono',
     'Ubuntu Mono', monospace;
   font-size: 0.9em;
   text-align: left;

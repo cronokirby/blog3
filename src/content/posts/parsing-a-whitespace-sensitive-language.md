@@ -342,35 +342,113 @@ for (const n of numbers()) {
 
 And we'll end up printing all the numbers that this generator yields.
 
+One function that's very useful, is a generator over all the characters of a string:
+
+```ts
+function *iterString(input: string) {
+  for (const c of input) {
+    yield c;
+  }
+}
+```
+
+This actually yields *strings* since we don't have a character type in TS.
+
+### Peeking
+
+Generators can also be seen as iterators. Given a generator, we can call it's `next` method,
+and get either:
+```ts
+{ done: false, value: v }
+```
+
+when there's a value that can be yielded, or:
+
+```ts
+{ done: true }
+```
+
+when we've reached the end of the stream.
+
+Another primitive we'd like to have is an iterator where we can look at the next item
+without consuming it. We need this for lexing, since we might want to do different things
+based on the input without consuming it. For example, we need to be able to look at:
+```
+abc;
+```
+And parse out the name `abc` as well as the semicolon `;`. To do this we need to be able
+to *peek* at the upcoming input, to decide whether to add it to the name or not.
+
+Let's make a class that allows us to do that (feel free to gloss over it):
+
+```ts
+type Peeked<T> = { ready: true; value: T } | { ready: false };
+
+class Peekable<T> implements IterableIterator<T> {
+  private _peeked: Peeked<T> = { ready: false };
+  private _iter: Iterator<T>;
+
+  constructor(iter: Iterable<T>) {
+    this._iter = iter[Symbol.iterator]();
+  }
+
+  peek() {
+    if (this._peeked.ready) {
+      return { done: false, value: this._peeked.value };
+    } else {
+      const result = this._iter.next();
+      if (!result.done) {
+        this._peeked = { ready: true, value: result.value };
+      }
+      return result;
+    }
+  }
+
+  next() {
+    if (this._peeked.ready) {
+      const value = this._peeked.value;
+      this._peeked = { ready: false };
+      return { done: false, value };
+    } else {
+      return this._iter.next();
+    }
+  }
+
+  [Symbol.iterator]() {
+    return this;
+  }
+}
+```
+
+This is a big blob of code, and you can skim over it if you want. The key thing is that
+in addition to `next` we also define `peek` which returns what `next` would return
+if we called, but doesn't advance the input stream.
+
+We define this as an `IterableIterator` because an instance has a `next` method we can
+call, making it an `Iterator`, but also a way to get an `Iterator` by calling `[Symbol.iterator]`,
+making it an `Iterable`. Making something an `Iterable` is nice, because then we can do
+
+```ts
+for (const thing of new Peekable(...))
+```
+
 ### Back to lexing
 
 Let's create a Lexer class that will contain the state we need when lexing, along
 with a few different methods.
 
 ```ts
-class Lexer {
-  private i: number;
+class Lexer implements Iterable<string> {
+  private _iter: Peekable<string>;
 
-  constructor(private readonly input: string) {
-    this.i = 0;
-  }
-
-  peek() {
-    if (this.i >= this.input.length) {
-      return null;
-    }
-    return this.input[this.i];
-  }
-
-  advance() {
-    this.i++;
+  constructor(input: string) {
+    this._iter = new Peekable(iterString(input))
   }
 }
 ```
 
-The `peek` method returns the current character, if available, and the `advance` method
-allows us to move on to further characters.
-We'll be able to write the lexer by combining these two methods.
+We construct the lexer by taking an input string, and creating a new peekable iterator
+over it. This will allow us to look at the next character in our input without consuming it
 
 The next method we'll write is:
 
@@ -393,8 +471,8 @@ The one character operators are very easy to lex:
 
 ```ts
 *[Symbol.iterator]() {
-  for (let peek = this.peek(); peek !== null; peek = this.peek()) {
-    switch (peek) {
+  for (let peek = this._iter.peek(); !peek.done; peek = this._iter.peek()) {
+    switch (peek.value) {
       case '=':
         self.advance();
         yield { type: Token.Equal };
@@ -428,12 +506,12 @@ Let's add support for numbers now:
 
 ```ts
 *[Symbol.iterator]() {
-  for (let peek = this.peek(); peek !== null; peek = this.peek()) {
-    switch (peek) {
+  for (let peek = this._iter.peek(); !peek.done; peek = this._iter.peek()) {
+    switch (peek.value) {
       case '=':
         // Single tokens ...
       default:
-        if (isNumber(peek)) {
+        if (isNumber(peek.value)) {
           const data = self.number();
           yield { type: Token.Number, data }
         }
@@ -442,17 +520,17 @@ Let's add support for numbers now:
 }
 
 number() {
-  let acc = '';
-  for (
-    let peek = this.peek();
-    peek !== null && isNumber(peek);
-    peek = this.peek()
-  ) {
-    acc += peek;
-    this.advance();
+    let acc = '';
+    for (
+      let peek = this._iter.peek();
+      !peek.done && isNumber(peek.value);
+      peek = this._iter.peek()
+    ) {
+      acc += peek.value;
+      this._iter.next();
+    }
+    return acc;
   }
-  return acc;
-}
 
 function isNumber(char: string): boolean {
   return /[0-9]/.test(char);
@@ -470,15 +548,15 @@ We'll be doing names similarly to numbers:
 
 ```ts
 *[Symbol.iterator]() {
-  for (let peek = this.peek(); peek !== null; peek = this.peek()) {
-    switch (peek) {
+  for (let peek = this._iter.peek(); !peek.done; peek = this._iter.peek()) {
+    switch (peek.value) {
     case '=':
       // Single tokens ...
     default:
-      if (isNumber(peek)) {
+      if (isNumber(pee.value)) {
         const data = this.number();
         yield { type: TokenType.Number, data }
-      } else if (isLowerAlpha(peek)) {
+      } else if (isLowerAlpha(peek.value)) {
         const data = this.string();
         yield { type: TokenType.Name, data }
       }
@@ -489,12 +567,12 @@ We'll be doing names similarly to numbers:
 string() {
   let acc = '';
   for (
-    let peek = this.peek();
-    peek !== null && isLowerAlpha(peek);
-    peek = this.peek()
+    let peek = this._iter.peek();
+    !peek.done && isLowerAlpha(peek.value);
+    peek = this._iter.peek()
   ) {
-    acc += peek;
-    this.advance();
+    acc += peek.value;
+    this._iter.next();
   }
   return acc;
 }
@@ -542,15 +620,15 @@ Finally, let's throw an error if we don't recognize a character, instead of just
 
 ```ts
 *[Symbol.iterator]() {
-  for (let peek = this.peek(); peek !== null; peek = this.peek()) {
-    switch (peek) {
+  for (let peek = this._iter.peek(); !peek.done; peek = this._iter.peek()) {
+    switch (peek.value) {
       default:
-        if (isNumber(peek)) {
+        if (isNumber(peek.value)) {
           // handling number
-        } else if (isLowerAlpha(peek)) {
+        } else if (isLowerAlpha(peek.value)) {
           // handling strings
         } else {
-          throw new Error(`Unrecognized character: '${peek}'`);
+          throw new Error(`Unrecognized character: '${peek.value}'`);
         }
         break;
     }
@@ -570,13 +648,13 @@ function isWhitespace(char: string): boolean {
 }
 
 *[Symbol.iterator]() {
-  for (let peek = this.peek(); peek !== null; peek = this.peek()) {
-    switch (peek) {
+  for (let peek = this._iter.peek(); !peek.done; peek = this._iter.peek()) {
+    switch (peek.value) {
       case '=':
       // Single tokens...
       default:
         if (isWhitespace(char)) {
-          this.advance();
+          this._iter.next();
         } else if // ...
         break;
     }
@@ -592,59 +670,48 @@ function isNumber(char: string): boolean {
 }
 
 function isLowerAlpha(char: string): boolean {
-  return /[a-z]/.test(char)
+  return /[a-z]/.test(char);
 }
 
 function isWhitespace(char: string): boolean {
   return /[\n\r\s]/.test(char);
 }
 
-class Lexer {
-  private i: number;
+class Lexer implements Iterable<Token> {
+  private _iter: Peekable<string>;
 
-  constructor(private readonly input: string) {
-    this.i = 0;
-  }
-
-  peek() {
-    if (this.i >= this.input.length) {
-      return null;
-    }
-    return this.input[this.i];
-  }
-
-  advance() {
-    this.i++;
+  constructor(input: string) {
+    this._iter = new Peekable(iterString(input));
   }
 
   *[Symbol.iterator]() {
-    for (let peek = this.peek(); peek !== null; peek = this.peek()) {
-      switch (peek) {
+    for (let peek = this._iter.peek(); !peek.done; peek = this._iter.peek()) {
+      switch (peek.value) {
         case '=':
-          this.advance();
+          this._iter.next();
           yield { type: TokenType.Equal };
           break;
         case '+':
-          this.advance();
+          this._iter.next();
           yield { type: TokenType.Plus };
           break;
         case '{':
-          this.advance();
+          this._iter.next();
           yield { type: TokenType.LeftBrace };
           break;
         case '}':
-          this.advance();
+          this._iter.next();
           yield { type: TokenType.RightBrace };
           break;
         case ';':
-          this.advance();
+          this._iter.next();
           yield { type: TokenType.SemiColon };
           break;
         default:
-          if (isNumber(peek)) {
+          if (isNumber(peek.value)) {
             const data = this.number();
             yield { type: TokenType.Number, data };
-          } else if (isLowerAlpha(peek)) {
+          } else if (isLowerAlpha(peek.value)) {
             const data = this.string();
             if (data === 'let') {
               yield { type: TokenType.Let };
@@ -653,8 +720,10 @@ class Lexer {
             } else {
               yield { type: TokenType.Name, data };
             }
+          } else if (isWhitespace(peek.value)) {
+            this._iter.next();
           } else {
-            throw new Error(`Unrecognized character: '${peek}'`);
+            throw new Error(`Unrecognized character: '${peek.value}'`);
           }
           break;
       }
@@ -664,12 +733,12 @@ class Lexer {
   number() {
     let acc = '';
     for (
-      let peek = this.peek();
-      peek !== null && isNumber(peek);
-      peek = this.peek()
+      let peek = this._iter.peek();
+      !peek.done && isNumber(peek.value);
+      peek = this._iter.peek()
     ) {
-      acc += peek;
-      this.advance();
+      acc += peek.value;
+      this._iter.next();
     }
     return acc;
   }
@@ -677,12 +746,12 @@ class Lexer {
   string() {
     let acc = '';
     for (
-      let peek = this.peek();
-      peek !== null && isLowerAlpha(peek);
-      peek = this.peek()
+      let peek = this._iter.peek();
+      !peek.done && isLowerAlpha(peek.value);
+      peek = this._iter.peek()
     ) {
-      acc += peek;
-      this.advance();
+      acc += peek.value;
+      this._iter.next();
     }
     return acc;
   }
@@ -741,4 +810,94 @@ I mentioned that we won't go into parsing in this post. The reason is that a par
 working on explicit semicolons and braces will be just fine. Our goal is to modify
 how the lexer works to become whitespace sensitive, while keeping the parser the same.
 
-To do this, we need to be able to look at the indentation
+Our parser will still munch on semicolons and braces. It's up to the lexer to look
+at the indentation, and emit the corresponding semicolons and braces.
+
+For example, the following program:
+
+```
+y =
+  let
+    z = 4
+  in z
+```
+
+Will give us the following token stream (right now):
+
+```
+y = let z = 4 in z
+```
+
+What we want is for our lexer to see that `z = 4` is indented to the right of `let`, and
+insert the missing braces, to get:
+
+```
+y = let { z = 4 } in z
+```
+
+## Annotated Tokens
+
+More concretely, what we want is to take our existing lexer, and have it output tokens
+annotated with indentation information. So instead of
+
+```ts
+function lex(): Stream<Token> {}
+```
+
+we'll have:
+
+```ts
+function lex(): Stream<Annotated<Token>> {}
+``` 
+
+And then we'll end up making another iterator that uses these tokens to produce semicolons
+and braces as well, but let's not get ahead of ourselves here.
+
+There are two pieces of information that we want to keep track of with our tokens:
+
+- Whether or not the token is at the start of a line
+- Which column a token appears at
+
+For example, if we have:
+
+```
+  a b
+```
+
+then `a` appears at the start of a line, and `b` doesn't. `a` appears at column 2 (indexing from 0),
+and `b` appears at index 4. It's clear that to be indentation sensitive, we need to keep track
+of the column. We also need to look at newlines, since we want to be able to look at:
+
+```
+let
+  x = 2
+  y = 3
+in x + y
+```
+
+and insert a semicolon between `x = 2` and `y = 3` because of that newline. It turns out that
+encoding whether or not a token occurs at the start of a line or not is sufficient information
+to do that.
+
+Let's create a new type to wrap our tokens:
+
+```ts
+enum LinePos {
+  Start,
+  Middle,
+}
+
+interface Annotated<T> {
+  item: T;
+  linePos: LinePos;
+  col: number;
+}
+```
+
+This adds the extra information we wanted to have from earlier.
+
+### Annotating characters
+
+Now let's write a little class that will annotate characters with this information. We'll
+use this stream to feed into our old lexer.
+
