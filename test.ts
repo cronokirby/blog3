@@ -1,9 +1,3 @@
-function *iterString(input: string) {
-  for (const c of input) {
-    yield c;
-  }
-}
-
 type Peeked<T> = { ready: true; value: T } | { ready: false };
 
 class Peekable<T> implements IterableIterator<T> {
@@ -42,14 +36,35 @@ class Peekable<T> implements IterableIterator<T> {
 }
 
 enum LinePos {
-  Start,
-  Middle,
+  Start = 'Start',
+  Middle = 'Middle',
 }
 
 interface Annotated<T> {
   item: T;
   linePos: LinePos;
   col: number;
+}
+
+function isWhitespace(char: string): boolean {
+  return /[\n\r\s]/.test(char);
+}
+
+function* annotate(input: Iterable<string>) {
+  let linePos = LinePos.Start;
+  let col = 0;
+  for (const c of input) {
+    yield { item: c, linePos, col };
+    if (c === '\n' || c === '\r') {
+      linePos = LinePos.Start;
+      col = 0;
+    } else {
+      col += 1;
+      if (linePos === LinePos.Start) {
+        linePos = LinePos.Middle;
+      }
+    }
+  }
 }
 
 enum TokenType {
@@ -79,57 +94,54 @@ function isLowerAlpha(char: string): boolean {
   return /[a-z]/.test(char);
 }
 
-function isWhitespace(char: string): boolean {
-  return /[\n\r\s]/.test(char);
-}
+class Lexer implements Iterable<Annotated<Token>> {
+  private _iter: Peekable<Annotated<string>>;
 
-class Lexer implements Iterable<Token> {
-  private _iter: Peekable<string>;
-
-  constructor(input: string) {
-    this._iter = new Peekable(iterString(input));
+  constructor(input: Iterable<Annotated<string>>) {
+    this._iter = new Peekable(input);
   }
 
   *[Symbol.iterator]() {
     for (let peek = this._iter.peek(); !peek.done; peek = this._iter.peek()) {
-      switch (peek.value) {
+      const item = peek.value.item;
+      switch (item) {
         case '=':
           this._iter.next();
-          yield { type: TokenType.Equal };
+          yield { ...peek.value, item: { type: TokenType.Equal } };
           break;
         case '+':
           this._iter.next();
-          yield { type: TokenType.Plus };
+          yield { ...peek.value, item: { type: TokenType.Plus } };
           break;
         case '{':
           this._iter.next();
-          yield { type: TokenType.LeftBrace };
+          yield { ...peek.value, item: { type: TokenType.LeftBrace } };
           break;
         case '}':
           this._iter.next();
-          yield { type: TokenType.RightBrace };
+          yield { ...peek.value, item: { type: TokenType.RightBrace } };
           break;
         case ';':
           this._iter.next();
-          yield { type: TokenType.SemiColon };
+          yield { ...peek.value, item: { type: TokenType.SemiColon } };
           break;
         default:
-          if (isNumber(peek.value)) {
+          if (isNumber(item)) {
             const data = this.number();
-            yield { type: TokenType.Number, data };
-          } else if (isLowerAlpha(peek.value)) {
+            yield { ...peek.value, item: { type: TokenType.Number, data } };
+          } else if (isLowerAlpha(item)) {
             const data = this.string();
             if (data === 'let') {
-              yield { type: TokenType.Let };
+              yield { ...peek.value, item: { type: TokenType.Let } };
             } else if (data === 'in') {
-              yield { type: TokenType.In };
+              yield { ...peek.value, item: { type: TokenType.In } };
             } else {
-              yield { type: TokenType.Name, data };
+              yield { ...peek.value, item: { type: TokenType.Name, data } };
             }
-          } else if (isWhitespace(peek.value)) {
+          } else if (isWhitespace(item)) {
             this._iter.next();
           } else {
-            throw new Error(`Unrecognized character: '${peek.value}'`);
+            throw new Error(`Unrecognized character: '${item}'`);
           }
           break;
       }
@@ -140,10 +152,10 @@ class Lexer implements Iterable<Token> {
     let acc = '';
     for (
       let peek = this._iter.peek();
-      !peek.done && isNumber(peek.value);
+      !peek.done && isNumber(peek.value.item);
       peek = this._iter.peek()
     ) {
-      acc += peek.value;
+      acc += peek.value.item;
       this._iter.next();
     }
     return acc;
@@ -153,10 +165,10 @@ class Lexer implements Iterable<Token> {
     let acc = '';
     for (
       let peek = this._iter.peek();
-      !peek.done && isLowerAlpha(peek.value);
+      !peek.done && isLowerAlpha(peek.value.item);
       peek = this._iter.peek()
     ) {
-      acc += peek.value;
+      acc += peek.value.item;
       this._iter.next();
     }
     return acc;
@@ -164,7 +176,7 @@ class Lexer implements Iterable<Token> {
 }
 
 function main(input: string) {
-  const lexer = new Lexer(input);
+  const lexer = new Lexer(annotate(input));
   for (const token of lexer) {
     console.log(token);
   }
