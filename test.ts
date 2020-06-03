@@ -175,6 +175,52 @@ class Lexer implements Iterable<Annotated<Token>> {
   }
 }
 
+type Layout = { type: 'Explicit' } | { type: 'IndentedBy'; amount: number };
+
+function indentedMore(layout: Layout, than: Layout) {
+  if (than.type === 'Explicit') {
+    return layout.type !== 'Explicit';
+  } else if (layout.type === 'Explicit') {
+    return indentedMore(than, layout);
+  } else {
+    return layout.amount > than.amount;
+  }
+}
+
+function sameIndentation(layout: Layout, comparedTo: Layout) {
+  if (layout.type !== comparedTo.type) {
+    return false;
+  }
+  if (layout.type === 'Explicit' || comparedTo.type === 'Explicit') {
+    return true;
+  }
+  return layout.amount === comparedTo.amount;
+}
+
+function* layout(input: Iterable<Annotated<Token>>) {
+  let layouts: Layout[] = [];
+  const topLayout = () => (layouts.length > 0 ? layouts[0] : null);
+  let expectingLayout = true;
+
+  for (const { col, linePos, item } of input) {
+    let shouldHandleIndent = linePos === LinePos.Start;
+
+    if (shouldHandleIndent) {
+      const newIndentation: Layout = { type: 'IndentedBy', amount: col };
+      for (
+        let layout = topLayout();
+        layout && indentedMore(layout, newIndentation);
+        layout = topLayout()
+      ) {
+        yield { type: TokenType.RightBrace };
+      }
+      const current = topLayout();
+    }
+
+    yield item;
+  }
+}
+
 function main(input: string) {
   const lexer = new Lexer(annotate(input));
   for (const token of lexer) {

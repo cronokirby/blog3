@@ -901,3 +901,99 @@ This adds the extra information we wanted to have from earlier.
 Now let's write a little class that will annotate characters with this information. We'll
 use this stream to feed into our old lexer.
 
+```ts
+function* annotate(input: Iterable<string>) {
+  let linePos = LinePos.Start;
+  let col = 0;
+  for (const c of input) {
+    yield { item: c, linePos, col };
+    if (c === '\n' || c === '\r') {
+      linePos = LinePos.Start;
+      col = 0;
+    } else {
+      col += 1;
+      if (linePos === LinePos.Start) {
+        linePos = LinePos.Middle;
+      }
+    }
+  }
+}
+```
+
+We change the current line position to be in the middle of a line as seen
+as we advance the column. We move to a newline whenever we encounter
+a newline character: `\n`.
+
+Now we just need to update the lexer class:
+
+```ts
+class Lexer implements Iterable<Annotated<Token>> {
+  private _iter: Peekable<Annotated<string>>;
+
+  constructor(input: Iterable<Annotated<string>>) {
+    this._iter = new Peekable(input);
+  }
+}
+```
+
+We also need to update the resut of the class to yield the additional
+metadata as well. For example, we have:
+
+```ts
+        case '=':
+          this._iter.next();
+          yield { ...peek.value, item: { type: TokenType.Equal } };
+          break;
+```
+
+We just have to do this everywhere else. You can check the full code
+at the end of this post if you want all of the details.
+
+This way of implementing things means that the position of a token
+is based on its first character. So:
+
+```
+let
+```
+
+is at column 0, because `l` is.
+
+## Implementing layout
+
+Now that we have a stream of tokens along with their positions, we can move
+on to the most interesting part of this post, which is actually implementing
+the layout algorithm based on this information.
+
+Our idea will be to go over this stream of annotated tokens, and insert
+semicolons and braces where appropriate. We want to take the layout
+expressed as whitespace, and return the explicit braces and semicolons
+that maps to.
+
+### Keeping track of layouts
+
+One core idea is to keep track of the current indentation level.
+For example, if we've just seen:
+
+```
+let
+  x = 3
+```
+
+Then currently we're in a block indented by 2 columns, and we expect
+tokens that continue the block to appear at the same indentation:
+
+```
+let
+  x = 3
+  y = 4
+```
+
+We can also have an explicit indentation, via an explicit `{`:
+
+```
+let { x = 3
+```
+
+In this case, we won't try and and infer any indentation at all, it's up
+to the user to add the semicolons. We know that this block is closed once
+we see an explicit `}`.
