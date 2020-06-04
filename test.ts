@@ -81,6 +81,10 @@ enum TokenType {
   Name = 'Name',
 }
 
+function startsLayout(typ: TokenType) {
+  return typ === TokenType.Let;
+}
+
 interface Token {
   readonly type: TokenType;
   readonly data?: string;
@@ -205,6 +209,36 @@ function* layout(input: Iterable<Annotated<Token>>) {
   for (const { col, linePos, item } of input) {
     let shouldHandleIndent = linePos === LinePos.Start;
 
+    if (item.type === TokenType.RightBrace) {
+      shouldHandleIndent = false;
+      if (topLayout()?.type === 'Explicit') {
+        layouts.pop();
+      } else {
+        throw Error('unmatched }');
+      }
+    } else if (startsLayout(item.type)) {
+      shouldHandleIndent = false;
+      expectingLayout = true;
+    } else if (expectingLayout) {
+      expectingLayout = false;
+      shouldHandleIndent = false;
+
+      if (item.type === TokenType.LeftBrace) {
+        layouts.push({ type: 'Explicit' });
+      } else {
+        const newIndentation: Layout = { type: 'IndentedBy', amount: col };
+        const currentIndentation = topLayout() ?? { type: 'Explicit' };
+        if (indentedMore(newIndentation, currentIndentation)) {
+          layouts.push(newIndentation);
+          yield { type: TokenType.LeftBrace };
+        } else {
+          yield { type: TokenType.LeftBrace };
+          yield { type: TokenType.RightBrace };
+          shouldHandleIndent = true;
+        }
+      }
+    }
+
     if (shouldHandleIndent) {
       const newIndentation: Layout = { type: 'IndentedBy', amount: col };
       for (
@@ -212,9 +246,13 @@ function* layout(input: Iterable<Annotated<Token>>) {
         layout && indentedMore(layout, newIndentation);
         layout = topLayout()
       ) {
+        layouts.pop();
         yield { type: TokenType.RightBrace };
       }
       const current = topLayout();
+      if (current && sameIndentation(current, newIndentation)) {
+        yield { type: TokenType.SemiColon };
+      }
     }
 
     yield item;

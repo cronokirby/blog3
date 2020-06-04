@@ -1,7 +1,7 @@
 ---
 title: "Parsing A Whitespace-Sensitive Language"
-date: 2020-05-07
-draft: true
+date: 2020-06-03
+draft: false
 description: "How to parse a language taking whitespace into account, with a functional language as an example"
 path: "/posts/parsing-a-whitespace-sensitive-language"
 image: "/posts/parsing-a-whitespace-sensitive-language/cover.jpg"
@@ -997,3 +997,286 @@ let { x = 3
 In this case, we won't try and and infer any indentation at all, it's up
 to the user to add the semicolons. We know that this block is closed once
 we see an explicit `}`.
+
+To keep track of what kind of layout we're currently in, we need
+to create a type representing a layout context:
+
+```ts
+type Layout = { type: 'Explicit' } | { type: 'IndentedBy'; amount: number }
+```
+
+A layout is either explicit, when the user has supplied `{` themselves,
+or implicit, when the amount of whitespace tells us the indentation
+we're currently observing.
+
+We also need a couple of useful functions:
+
+```ts
+function indentedMore(layout: Layout, than: Layout) {
+  if (than.type === 'Explicit') {
+    return layout.type !== 'Explicit';
+  } else if (layout.type === 'Explicit') {
+    return indentedMore(than, layout);
+  } else {
+    return layout.amount > than.amount;
+  }
+}
+```
+
+This function tells us when one layout is strictly greater (`>`) than
+another. This will be useful later. We consider implicit indentation
+to always be greater than explicit indentation, otherwise we look
+at how much things are indented.
+
+The second useful function is:
+
+```ts
+function sameIndentation(layout: Layout, comparedTo: Layout) {
+  if (layout.type !== comparedTo.type) {
+    return false;
+  }
+  if (layout.type === 'Explicit' || comparedTo.type === 'Explicit') {
+    return true;
+  }
+  return layout.amount === comparedTo.amount;
+}
+```
+
+This checks if two layouts are identical.
+
+### Tokens that start layouts
+
+With the way our language works, only certain tokens can start layouts.
+Specifically, after `let`, we expect a layout to start, either explicitly:
+
+```
+let { x = 2; y = 3 } in x + y`
+```
+
+or implicitly, via indentation and newlines
+
+```
+let
+  x = 2
+  y = 3
+in x + y
+```
+
+So we create a function:
+
+```ts
+function startsLayout(typ: TokenType) {
+  return typ === TokenType.Let;
+}
+```
+
+Depending on our language, there might be more tokens here. For example
+if we added a `where` keyword, that worked similarly to let:
+
+```
+f = x
+  where
+    x = 3
+```
+
+which could also be written:
+
+```
+f = x
+  where { x = 3 }
+```
+
+We'd add that to the tokens that start layouts as well.
+
+### Layout function and rules
+
+What we want to do is to iterate over our stream of annotated tokens,
+and insert `{`, `;` and `}` at the right moments:
+
+```ts
+function* layout(input: Iterable<Annotated<Token>>) {
+  let layouts: Layout[] = [];
+  const topLayout = () => (layouts.length > 0 ? layouts[0] : null);
+  let expectingLayout = true;
+
+  // ...
+}
+```
+
+We have `layouts`, which is a stack of the current layout contexts. Whenever
+we enter a new layout, by seeing a `{`, or through some other means, as we'll
+see soon.
+
+`expectingLayout` is something we'll use soon enough. The idea is to keep
+track of whether or not the last token started a layout. For example
+when we see `let` we need to be ready to start a layout based on the next
+token. At the start of a file, we're expecting a layout.
+
+Now we go through the items tokens in the input stream:
+
+```ts
+  for (const { col, linePos, item } of input) {
+    yield item;
+  }
+```
+
+Right now all we're doing is taking out the token from the structure
+that holds it along with its position, and just yielding that. What
+we want to do is to add additional logic to insert semicolons and
+braces at the right spots.
+
+#### Indented tokens
+
+Let's say we see an indented token `z`:
+
+```
+let
+  y = let
+    x = 3
+  z
+```
+
+What we want to do in this case is end all the layouts that are further
+indented than this current token. If we're continuing the current layout,
+we want to make sure to insert a semicolon as well.
+
+```ts
+    let shouldHandleIndent = linePos === LinePos.Start;
+
+    if (shouldHandleIndent) {
+      const newIndentation: Layout = { type: 'IndentedBy', amount: col };
+      for (
+        let layout = topLayout();
+        layout && indentedMore(layout, newIndentation);
+        layout = topLayout()
+      ) {
+        yield { type: TokenType.RightBrace };
+      }
+      const current = topLayout();
+      if (current && sameIndentation(current, newIndentation)) {
+        yield { type: TokenType.SemiColon };
+      }
+    }
+```
+
+We say that we should handle the indent whenever the token is at the start
+of a line. As we'll see soon, this doesn't cover all cases. For example,
+`}` shouldn't work like this.
+
+Once there, we remove the current layout, and yield a `}`. This can be
+seen as "closing" the current layout. Note that we don't close explicit
+layouts implicitly like this, since an explicit layout is never considered
+as indented more than an implicit layout.
+
+Finally, if the top layout is the same as this layout, then we insert
+a semicolon, because there were other tokens that appeared in this same
+layout, and we need to seperate them by semicolons.
+
+This final rule lets us insert semicolons whenever we observe newlines.
+
+#### Handling }
+
+If we encounter a `}`. This means that the user is trying to close an
+explicit layout with `{`. We don't allow `}` to close implicit layouts.
+What we want to do is pop the current layout off, if it's explicit,
+otherwise throw an error.
+
+We have:
+
+```ts
+    let shouldHandleIndent = linePos === LinePos.Start;
+
+    if (item.type === TokenType.RightBrace) {
+      shouldHandleIndent = false;
+      if (topLayout()?.type === 'Explicit') {
+        layouts.pop();
+      } else {
+        throw Error('unmatched }');
+      }
+    }
+```
+
+We don't need to handle the indentation of `}` afterwards, as we mentioned
+before. We throw an error whenever the top layout is not explicit.
+
+#### Handling a starter token
+
+When we encounter a token like `let`, we need to expect a layout, and not
+handle that token as continuing an implicit layout.
+
+```ts
+    } else if (startsLayout(item.type)) {
+      shouldHandleIndent = false;
+      expectingLayout = true;
+    }
+```
+
+#### Starting layouts
+
+Now, if we're expecting to see a layout, we need to look at the current
+token's indentation (regardless of if it's at the start of a line or not),
+and start an explicit or implicit layout based on that:
+
+```ts
+    } else if (expectingLayout) {
+      expectingLayout = false;
+      shouldHandleIndent = false;
+```
+
+If we see a `{`, then that matches the expected layout, and starts
+an explicit layout:
+
+```ts
+      if (item.type === TokenType.LeftBrace) {
+        layouts.push({ type: 'Explicit' });
+      }
+``` 
+
+Otherwise, it depends on whether or not the token is indented further
+than the current context. If it is, then it can start a new layout,
+otherwise the token is continuing some layout, which might be further
+down the stack, and involves closing implicit layouts. In that case,
+we'll need to handle the token again later.
+
+So we have:
+
+```ts
+      } else {
+        const newIndentation: Layout = { type: 'IndentedBy', amount: col };
+        const currentIndentation = topLayout() ?? { type: 'Explicit' };
+        if (indentedMore(newIndentation, currentIndentation)) {
+          layouts.push(newIndentation);
+          yield { type: TokenType.LeftBrace };
+        } else {
+          yield { type: TokenType.LeftBrace };
+          yield { type: TokenType.RightBrace };
+          shouldHandleIndent = true;
+        }
+      }
+```
+
+Inserting a `{` when we start an implicit layout makes sense, but what's
+with inserting an empty layout `{ }`. This makes sense because we still
+need to have these characters in the layout, it's just that it's empty,
+because this token belongs to the layouts surround it. It's like seeing:
+
+```
+let
+  x = let
+  y = 2
+```
+When we see `y`, we insert `{}` after the second let, because it's empty.
+Now this program isn't syntactically valid, but our lexer doesn't care
+about that. That's for our parser to worry about.
+
+We make sure to set `shouldHandleIndent` to true, because this token continues
+a layout somewhere.
+
+# Conclusion
+
+So that was a pretty lengthy post, and got into the details quite a bit.
+I had trouble going from haskell's description of their algorithm to
+an actual implementation, and hopefully this post can be useful to those
+who want a very verbose implementation of things.
+
+The final code can be found [here](https://gist.github.com/cronokirby/aad5db650df406ceec76e35ea0c40ae2).
