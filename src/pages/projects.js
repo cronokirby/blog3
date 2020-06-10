@@ -12,18 +12,18 @@ const ProjectCard = ({ html, description, title, tech, link, image, even }) => {
     >
       {!even ? null : (
         <div className="w-3/4 sm:w-1/3">
-          <img src={image} className="object-contain rounded shadow-md"></img>
+          <img src={image} className="object-contain rounded shadow-md" alt=""></img>
         </div>
       )}
 
-      <div className="px-4 py-2 mx-4 my-4 text-main rounded shadow-md bg-2">
+      <div className="px-4 py-2 mx-4 my-4 rounded shadow-md text-main bg-2">
         <h1 className="text-3xl font-bold hover:underline text-hover">
           <a href={link}>{title}</a>
         </h1>
-        <h2 className="w-64 text-lg text-nord4">{description}</h2>
+        <h2 className="w-64 text-lg text-secondary">{description}</h2>
         <ul className="flex flex-wrap w-64 my-2 text-main">
           {tech.map(t => (
-            <li className="px-1 my-1 font-bold text-sm bg-3 rounded mr-3">{t}</li>
+            <li className="px-1 my-1 mr-3 text-sm font-bold rounded bg-3">{t}</li>
           ))}
         </ul>
         <div
@@ -33,7 +33,7 @@ const ProjectCard = ({ html, description, title, tech, link, image, even }) => {
       </div>
       {even ? null : (
         <div className="w-3/4 sm:w-1/3">
-          <img src={image} className="object-contain rounded shadow-md"></img>
+          <img src={image} className="object-contain rounded shadow-md" alt=""></img>
         </div>
       )}
     </div>

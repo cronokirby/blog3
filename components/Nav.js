@@ -111,11 +111,12 @@ function useDarkMode() {
   const saveDark = d => {
     window.localStorage.setItem('color-scheme', d ? 'dark' : 'light');
   };
-  const setDarkAndSave = d => {
-    setDark(d);
-    saveDark(d);
-  };
+
   React.useEffect(() => {
+    const setDarkAndSave = d => {
+      setDark(d);
+      saveDark(d);
+    };
     const stored = retrieveStoredDarkMode();
     const initialDark =
       stored !== null ? stored === 'dark' : getDarkModePreference();

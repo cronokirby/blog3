@@ -66,6 +66,7 @@ const Content = () => (
       <img
         src="/fluff/1.png"
         className="z-10 w-10/12 rounded-lg shadow-lg sm:w-5/12"
+        alt=""
       ></img>
       <div className="relative inline-block h-64 mx-8">
         <div className="fill-current text-1">
@@ -117,6 +118,7 @@ const Content = () => (
       <img
         src="/fluff/2.png"
         className="z-10 w-10/12 rounded-lg shadow-lg sm:w-5/12 md:w-5/12 lg:w-3/12"
+        alt=""
       ></img>
     </div>
   </div>
