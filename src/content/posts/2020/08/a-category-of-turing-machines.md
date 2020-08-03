@@ -202,11 +202,37 @@ We can visualize composition as putting one machine after another:
 
 The second machine uses the output of the first to do its work.
 
-Giving a formal description of what the composition of two machines look like is a bit
-tricky, but necessary to gain confidence that this construct actually makes sense
+It's clear that this kind of machine is a thing that should exist, but giving a formal
+description in terms of the states, transition function, etc. is tedious, and not
+that illuminating.
 
-### Formal Composition
+In fact, you probably need to introduce the concept of *work tapes*, on which you can
+both read and write, to our model of a turing machine, in order to define this composition
+in a straight-forward way.
 
+For our purposes, we don't care how many work tapes a turing machine might end up using.
+
+# A Category of Machines
+
+Now that we've defined an identity machine, along with a way to compose multiple machines,
+we have the ingredients necessary to form a category of turing machines.
+
+This category will have objects natural numbers, and a morphism $m \to n$ is a turing
+machine with $m$ input tapes and $n$ output tapes. The identity morphisms are given
+by the identity machines we gave earlier, which simply copy their inputs to their outputs.
+
+Composition is defined by the construct we had earlier.
+
+One subtlety we're seriously glossing over, is under what conditions we consider two machines to be equal. The problem with
+equality as defined by looking at the internals of a machine is that two machines ostensibly
+performing identical manipulations of a tape can have different structure. Because of this,
+we need to relax our morphisms slightly, to be equivalence classes of machines instead of
+machines per se.
+
+That, or we can say that associativity of composition is guaranteed up to a certain
+kind of isomorphism, which is the approach in [[2]](/posts/2020/08/a-category-of-turing-machines/#ref-2)
+
+## Products
 
 # References
 
