@@ -112,7 +112,7 @@ So the identity poses a problem, but what about the other operations?
 
 ## Vacuous functions
 
-Although it might seem odd at first, we can in fact construct a function $\emptyset \to emptyset$, from the empty
+Although it might seem odd at first, we can in fact construct a function $\emptyset \to \emptyset$, from the empty
 set to itself.
 
 Intuitively, if you manage to give me an element of the empty set, I can simply give it back to you. Thus, it's
@@ -264,7 +264,7 @@ morphism is unique.
 
 ## Initially Empty
 
-In $\bold{Gr}\emptyset\bold{up} however, there is no map $\{e\} \to \emptyset$, so the trivial group
+In $\bold{Gr}\emptyset\bold{up}$ however, there is no map $\{e\} \to \emptyset$, so the trivial group
 cannot be initial.
 
 In fact, the empty group has stolen the initial property away from the trivial group. There is a unique
