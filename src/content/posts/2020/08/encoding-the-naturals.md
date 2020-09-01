@@ -457,7 +457,7 @@ doesn't simply mirror what `NatRec` does:
 (NatMon f) * (NatMon g) = NatMon (f . g)
 ```
 
-The fact that the second definition works is quite marvelous, and is stil
+The fact that the second definition works is quite marvelous, and is still
 strikingly beautiful to me. It's interesting that multiplication
 over the natural numbers is entirely determined by function composition,
 seeing the natural numbers as the "universal" monoid homomorphism.

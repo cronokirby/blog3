@@ -74,7 +74,7 @@ as we'll see later.
 
 The integers $\mathbb{Z}$ form a group under addition, in the natural way. The inverse of $x$ is $-x$.
 The identity is $0$, and addition $x + y$ forms our group operation. This group is a bit special, because it's
-actually commutative, because $x + y = y + x$. This proeprty does not hold in every group.
+actually commutative, because $x + y = y + x$. This property does not hold in every group.
 
 If we take the integers modulo some number, say $\{0, 1, 2, 3\}$ for the integers modulo $4$, then this also
 forms a commutative group, in a similar way.
