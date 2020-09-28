@@ -101,7 +101,11 @@ body.dark {
 
 .blog-post-content {
   @apply font-sans;
-  font-size: 1.25em;
+  font-size: 1.1em;
+}
+
+.katex-html {
+  font-size: 0.9em;
 }
 
 .blog-post-content p {
@@ -122,6 +126,12 @@ body.dark {
 
 .blog-post-content h4 {
   @apply font-bold;
+}
+
+.blog-post-content img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .blog-post-content pre {
